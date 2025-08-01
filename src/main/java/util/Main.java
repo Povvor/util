@@ -15,8 +15,50 @@ public class Main {
     private static boolean isShortStat = false;
     private static boolean isFullStat = false;
     private static StandardOpenOption toRewrite = StandardOpenOption.TRUNCATE_EXISTING;
-    private static String prefix ="";
+    private static String prefix = "";
     private static String path = "";
+
+    public static void main(String[] args) {
+        parseArgs(args);
+        initInputList();
+        if (INPUT_STRINGS.isEmpty()) {
+            return;
+        }
+
+
+        List<String> floats = new ArrayList<>();
+        List<String> ints = new ArrayList<>();
+        List<String> strings = new ArrayList<>();
+
+        Iterator<String> iterator = INPUT_STRINGS.iterator();
+        while (iterator.hasNext()) {
+            String string = iterator.next();
+            Type type = defineStringType(string);
+            Statistics.processStringForStatistics(string, isFullStat, type);
+            switch (type) {
+                case STRING:
+                    strings.add(string);
+                    break;
+                case INTEGER:
+                    ints.add(string);
+                    break;
+                case  FLOAT:
+                    floats.add(string);
+                    break;
+            }
+            iterator.remove();
+        }
+        write(strings, "strings.txt");
+        write(floats, "floats.txt");
+        write(ints, "integers.txt");
+
+        if (isShortStat || isFullStat) {
+            Statistics.printShortStatistics(strings, floats, ints);
+        }
+        if (isFullStat) {
+            Statistics.getFullStatistics();
+        }
+    }
 
     private static Type defineStringType(String string) {
         try {
@@ -70,7 +112,7 @@ public class Main {
         }
     }
 
-    private static boolean initInputList() {
+    private static void initInputList() {
         for (String file : FILES) {
             try {
                 INPUT_STRINGS.addAll(Files.readAllLines(Paths.get(file)));
@@ -81,15 +123,13 @@ public class Main {
         }
         if (INPUT_STRINGS.isEmpty()) {
             System.out.println("Нет входных файлов доступных для обработки!\n");
-            return false;
         }
-        return true;
     }
 
-    private static void write(List<String> strings, String fileName) {
+    private static void write(List<String> outputStrings, String fileName) {
         try {
-            if (!strings.isEmpty()) {
-                Files.write(Paths.get(path + prefix + fileName), strings, StandardOpenOption.CREATE, toRewrite);
+            if (!outputStrings.isEmpty()) {
+                Files.write(Paths.get(path + prefix + fileName), outputStrings, StandardOpenOption.CREATE, toRewrite);
             }
         } catch (IOException e) {
             System.out.println("Ошибка при записи в файл: " + fileName);
@@ -103,45 +143,5 @@ public class Main {
         System.out.println("  -s        Вывод краткой статистики");
         System.out.println("  -f        Вывод полной статистики");
         System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
-    }
-
-    public static void main(String[] args) {
-        parseArgs(args);
-        if (!initInputList()) {
-            return;
-        }
-
-        List<String> floats = new ArrayList<>();
-        List<String> ints = new ArrayList<>();
-        List<String> strings = new ArrayList<>();
-
-        Iterator<String> iterator = INPUT_STRINGS.iterator();
-        while (iterator.hasNext()) {
-            String string = iterator.next();
-            Type type = defineStringType(string);
-            Statistics.processStringForStatistics(string, isFullStat, type);
-            switch (type) {
-                case STRING:
-                    strings.add(string);
-                    break;
-                case INTEGER:
-                    ints.add(string);
-                    break;
-                case  FLOAT:
-                    floats.add(string);
-                    break;
-            }
-            iterator.remove();
-        }
-        write(strings, "strings.txt");
-        write(floats, "floats.txt");
-        write(ints, "integers.txt");
-
-        if (isShortStat || isFullStat) {
-            Statistics.getShortStatistics(strings, floats, ints);
-        }
-        if (isFullStat) {
-            Statistics.getFullStatistics();
-        }
     }
 }
