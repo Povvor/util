@@ -18,7 +18,7 @@ public class Main {
     private static String prefix ="";
     private static String path = "";
 
-    private static Type processString(String string) {
+    private static Type defineStringType(String string) {
         try {
             BigDecimal number = new BigDecimal(string);
             return number.stripTrailingZeros().scale() <= 0 ? Type.INTEGER : Type.FLOAT;
@@ -77,10 +77,20 @@ public class Main {
             }
         }
         if (INPUT_STRINGS.isEmpty()) {
-            System.out.println("Нет входных файлов доступных для обработки!");
+            System.out.println("Нет входных файлов доступных для обработки!\n");
             return false;
         }
         return true;
+    }
+
+    private static void write(List<String> strings, String fileName) {
+        try {
+            if (!strings.isEmpty()) {
+                Files.write(Paths.get(path + prefix + fileName), strings, StandardOpenOption.CREATE, toRewrite);
+            }
+        } catch (IOException e) {
+            System.out.println("Ошибка при записи в файл: " + fileName);
+        }
     }
 
     public static void main(String[] args) {
@@ -96,7 +106,7 @@ public class Main {
         Iterator<String> iterator = INPUT_STRINGS.iterator();
         while (iterator.hasNext()) {
             String string = iterator.next();
-            Type type = processString(string);
+            Type type = defineStringType(string);
             Statistics.processStringForStatistics(string, isFullStat, type);
             switch (type) {
                 case STRING:
@@ -111,14 +121,9 @@ public class Main {
             }
             iterator.remove();
         }
-
-        try {
-            Files.write(Paths.get(path + prefix + "strings.txt"), strings, StandardOpenOption.CREATE, toRewrite);
-            Files.write(Paths.get(path + prefix + "floats.txt"), floats, StandardOpenOption.CREATE, toRewrite);
-            Files.write(Paths.get(path + prefix + "integers.txt"), ints, StandardOpenOption.CREATE, toRewrite);
-        } catch (IOException e) {
-            System.out.println("Возникла проблема при записи в файл! " + e.getMessage());
-        }
+        write(strings, "strings.txt");
+        write(floats, "floats.txt");
+        write(ints, "integers.txt");
 
         if (isShortStat || isFullStat) {
             Statistics.getShortStatistics(strings, floats, ints);
