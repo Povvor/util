@@ -18,8 +18,6 @@ public class Main {
     private static String prefix ="";
     private static String path = "";
 
-    public enum Type {STRING, INTEGER, FLOAT}
-
     private static Type processString(String string) {
         try {
             BigDecimal number = new BigDecimal(string);
@@ -27,7 +25,7 @@ public class Main {
         } catch (NumberFormatException e) {
             return Type.STRING;
         }
-    };
+    }
 
     private static String findValueAfterArg(String[] args, String arg) {
         for (int i = 0; i < args.length; i++) {
@@ -99,18 +97,16 @@ public class Main {
         while (iterator.hasNext()) {
             String string = iterator.next();
             Type type = processString(string);
+            Statistics.processStringForStatistics(string, isFullStat, type);
             switch (type) {
                 case STRING:
                     strings.add(string);
-                    Statistics.processString(string, isFullStat);
                     break;
                 case INTEGER:
                     ints.add(string);
-                    Statistics.processInteger(string, isFullStat);
                     break;
                 case  FLOAT:
                     floats.add(string);
-                    Statistics.processDecimal(string, isFullStat);
                     break;
             }
             iterator.remove();

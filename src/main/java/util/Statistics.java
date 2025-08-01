@@ -13,50 +13,7 @@ public class Statistics {
     public static boolean isFirstDecimalProcessed = false;
     public static boolean isFirstStringProcessed = false;
 
-    public static void processInteger(String string, boolean shouldProceed) {
-        if (!shouldProceed) {
-            return;
-        }
-        BigDecimal Integer = new BigDecimal(string);
-        sumInt = sumInt.add(Integer);
-        intCount++;
-        if (!isFirstIntProcessed) {
-            minInt = Integer;
-            maxInt = Integer;
-            isFirstIntProcessed = true;
-        } else {
-            if (minInt.compareTo(Integer) > 0) {
-                minInt = Integer;
-            }
-            if (maxInt.compareTo(Integer) < 0) {
-                maxInt = Integer;
-            }
-        }
-
-    }
-
-    public static void processDecimal(String string, boolean shouldProceed) {
-        if (!shouldProceed) {
-            return;
-        }
-        BigDecimal bigDecimal = new BigDecimal(string);
-        sumDecimal = sumDecimal.add(bigDecimal);
-        decCount++;
-        if (!isFirstDecimalProcessed) {
-            minDecimal = bigDecimal;
-            maxDecimal = bigDecimal;
-            isFirstDecimalProcessed = true;
-        } else  {
-            if (minDecimal.compareTo(bigDecimal) > 0) {
-                minDecimal = bigDecimal;
-            }
-            if (maxDecimal.compareTo(bigDecimal) < 0) {
-                maxDecimal = bigDecimal;
-            }
-        }
-    }
-
-    public static void processString(String string, boolean shouldProceed) {
+    public static void processStringForStatistics(String string, boolean shouldProceed, Type type) {
         if (!shouldProceed) {
             return;
         }
@@ -64,19 +21,58 @@ public class Statistics {
             emptyStringCount++;
             return;
         }
-        stringCount++;
-        int length = string.length();
-        if (!isFirstStringProcessed) {
-            shortestString = length;
-            longestString = length;
-            isFirstStringProcessed = true;
-        }  else {
-            if (shortestString > length) {
-                shortestString = length;
-            }
-            if (longestString < length) {
-                longestString = length;
-            }
+
+        switch (type) {
+            case FLOAT:
+                BigDecimal bigDecimal = new BigDecimal(string);
+                decCount++;
+                sumDecimal = sumDecimal.add(bigDecimal);
+                if (!isFirstDecimalProcessed) {
+                    minDecimal = bigDecimal;
+                    maxDecimal = bigDecimal;
+                    isFirstDecimalProcessed = true;
+                } else  {
+                    if (minDecimal.compareTo(bigDecimal) > 0) {
+                        minDecimal = bigDecimal;
+                    }
+                    if (maxDecimal.compareTo(bigDecimal) < 0) {
+                        maxDecimal = bigDecimal;
+                    }
+                }
+                break;
+            case INTEGER:
+                BigDecimal bigInteger = new BigDecimal(string);
+                intCount++;
+                sumInt = sumInt.add(bigInteger);
+                if (!isFirstIntProcessed) {
+                    minInt = bigInteger;
+                    maxInt = bigInteger;
+                    isFirstIntProcessed = true;
+                } else {
+                    if (minInt.compareTo(bigInteger) > 0) {
+                        minInt = bigInteger;
+                    }
+                    if (maxInt.compareTo(bigInteger) < 0) {
+                        maxInt = bigInteger;
+                    }
+                }
+                break;
+            case  STRING:
+                stringCount++;
+                int length = string.length();
+                if (!isFirstStringProcessed) {
+                    shortestString = length;
+                    longestString = length;
+                    isFirstStringProcessed = true;
+                }  else {
+                    if (shortestString > length) {
+                        shortestString = length;
+                    }
+                    if (longestString < length) {
+                        longestString = length;
+                    }
+                }
+                break;
         }
     }
 
