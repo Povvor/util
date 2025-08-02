@@ -7,16 +7,16 @@ import java.util.List;
 public class Statistics {
     private BigDecimal minInt;
     private BigDecimal maxInt;
-    private BigDecimal sumInt = BigDecimal.valueOf(0);
+    private BigDecimal sumInt;
     private BigDecimal minDecimal;
     private BigDecimal maxDecimal;
-    private BigDecimal sumDecimal = BigDecimal.valueOf(0);
+    private BigDecimal sumDecimal;
     private Integer shortestString, longestString;
-    private int intCount, decCount, emptyStringCount;
+    private int emptyStringCount;
 
-    public void getFullStatistics() {
+    public void getFullStatistics(int floatsCount, int intsCount) {
         if  (minInt != null) {
-            BigDecimal avgInt = sumInt.divide(BigDecimal.valueOf(intCount), RoundingMode.HALF_UP);
+            BigDecimal avgInt = sumInt.divide(BigDecimal.valueOf(intsCount), RoundingMode.HALF_UP);
             System.out.println("Полная статистика для целых чисел:");
             printStatisticsForEachType(minInt, maxInt, sumInt, avgInt);
 
@@ -25,7 +25,7 @@ public class Statistics {
         }
 
         if  (minDecimal != null) {
-            BigDecimal avgDecimal = sumDecimal.divide(BigDecimal.valueOf(decCount), RoundingMode.HALF_UP);
+            BigDecimal avgDecimal = sumDecimal.divide(BigDecimal.valueOf(floatsCount), RoundingMode.HALF_UP);
             System.out.println("Полная статистика для действительных чисел:");
             printStatisticsForEachType(minDecimal, maxDecimal, sumDecimal, avgDecimal);
         }  else {
@@ -50,16 +50,10 @@ public class Statistics {
 
         switch (type) {
             case FLOAT:
-                BigDecimal bigDecimal = new BigDecimal(string);
-                decCount++;
-                sumDecimal = sumDecimal.add(bigDecimal);
-                calculateMinMaxDecimal(bigDecimal);
+                calculateMinMaxSumDecimal(string);
                 break;
             case INTEGER:
-                BigDecimal bigInteger = new BigDecimal(string);
-                intCount++;
-                sumInt = sumInt.add(bigInteger);
-                calculateMinMaxInteger(bigInteger);
+                calculateMinMaxSumInteger(string);
                 break;
             case  STRING:
                 calculateMinMaxStringLength(string);
@@ -75,10 +69,12 @@ public class Statistics {
         System.out.println();
     }
 
-    public void calculateMinMaxDecimal(BigDecimal bigDecimal) {
-        if (minDecimal == null || maxDecimal == null) {
+    public void calculateMinMaxSumDecimal(String string) {
+        BigDecimal bigDecimal = new BigDecimal(string);
+        if (minDecimal == null || maxDecimal == null || sumDecimal == null) {
             minDecimal = bigDecimal;
             maxDecimal = bigDecimal;
+            sumDecimal = bigDecimal;
         } else  {
             if (minDecimal.compareTo(bigDecimal) > 0) {
                 minDecimal = bigDecimal;
@@ -86,20 +82,24 @@ public class Statistics {
             if (maxDecimal.compareTo(bigDecimal) < 0) {
                 maxDecimal = bigDecimal;
             }
+            sumDecimal = sumDecimal.add(bigDecimal);
         }
     }
 
-    public void calculateMinMaxInteger(BigDecimal bigDecimal) {
-        if (minInt == null || maxInt == null) {
-            minInt = bigDecimal;
-            maxInt = bigDecimal;
+    public void calculateMinMaxSumInteger(String string) {
+        BigDecimal bigInteger = new BigDecimal(string);
+        if (minInt == null || maxInt == null || sumInt == null) {
+            minInt = bigInteger;
+            maxInt = bigInteger;
+            sumInt = bigInteger;
         } else  {
-            if (minInt.compareTo(bigDecimal) > 0) {
-                minInt = bigDecimal;
+            if (minInt.compareTo(bigInteger) > 0) {
+                minInt = bigInteger;
             }
-            if (maxInt.compareTo(bigDecimal) < 0) {
-                maxInt = bigDecimal;
+            if (maxInt.compareTo(bigInteger) < 0) {
+                maxInt = bigInteger;
             }
+            sumInt = sumInt.add(bigInteger);
         }
     }
 
@@ -164,6 +164,30 @@ public class Statistics {
 
     public void setLongestString(Integer longestString) {
         this.longestString = longestString;
+    }
+
+    public BigDecimal getSumInt() {
+        return sumInt;
+    }
+
+    public void setSumInt(BigDecimal sumInt) {
+        this.sumInt = sumInt;
+    }
+
+    public BigDecimal getSumDecimal() {
+        return sumDecimal;
+    }
+
+    public void setSumDecimal(BigDecimal sumDecimal) {
+        this.sumDecimal = sumDecimal;
+    }
+
+    public int getEmptyStringCount() {
+        return emptyStringCount;
+    }
+
+    public void setEmptyStringCount(int emptyStringCount) {
+        this.emptyStringCount = emptyStringCount;
     }
 
     private void printStatisticsForEachType(Number min, Number max, Number sum, Number avg) {

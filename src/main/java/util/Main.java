@@ -57,7 +57,7 @@ public class Main {
             statistics.printShortStatistics(strings, floats, ints);
         }
         if (isFullStat) {
-            statistics.getFullStatistics();
+            statistics.getFullStatistics(floats.size(), ints.size());
         }
     }
 

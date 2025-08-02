@@ -13,10 +13,10 @@ class StatisticsMinMaxTest {
         Statistics statistics = new Statistics();
         BigDecimal newMax = BigDecimal.valueOf(100);
         BigDecimal newMin = BigDecimal.valueOf(0);
-        statistics.calculateMinMaxInteger(newMax);
-        statistics.calculateMinMaxInteger(newMin);
-        assertThat(statistics.getMaxInt()).isEqualTo(BigDecimal.valueOf(100));
-        assertThat(statistics.getMinInt()).isEqualTo(BigDecimal.valueOf(0));
+        statistics.calculateMinMaxSumInteger(newMax.toString());
+        statistics.calculateMinMaxSumInteger(newMin.toString());
+        assertThat(statistics.getMaxInt()).isEqualTo(newMax);
+        assertThat(statistics.getMinInt()).isEqualTo(newMin);
     }
 
     @Test
@@ -26,8 +26,8 @@ class StatisticsMinMaxTest {
         statistics.setMinInt(BigDecimal.valueOf(1));
         BigDecimal newMax = BigDecimal.valueOf(21);
         BigDecimal newMin = BigDecimal.valueOf(-70);
-        statistics.calculateMinMaxInteger(newMax);
-        statistics.calculateMinMaxInteger(newMin);
+        statistics.calculateMinMaxSumInteger(newMax.toString());
+        statistics.calculateMinMaxSumInteger(newMin.toString());
         assertThat(statistics.getMaxInt()).isEqualTo(newMax);
         assertThat(statistics.getMinInt()).isEqualTo(newMin);
     }
@@ -35,49 +35,51 @@ class StatisticsMinMaxTest {
     @Test
     void calculateMinMaxIntegerWhenNothingChangedTest() {
         Statistics statistics = new Statistics();
-        statistics.setMaxInt(BigDecimal.valueOf(3000));
-        statistics.setMinInt(BigDecimal.valueOf(-1440));
+        BigDecimal oldMax = BigDecimal.valueOf(3000);
+        BigDecimal oldMin = BigDecimal.valueOf(-1440);
+        statistics.setMaxInt(oldMax);
+        statistics.setMinInt(oldMin);
         BigDecimal maxInput = BigDecimal.valueOf(2121);
         BigDecimal minInput = BigDecimal.valueOf(-700);
-        statistics.calculateMinMaxInteger(maxInput);
-        statistics.calculateMinMaxInteger(minInput);
+        statistics.calculateMinMaxSumInteger(maxInput.toString());
+        statistics.calculateMinMaxSumInteger(minInput.toString());
         assertThat(statistics.getMaxInt()).isEqualTo(BigDecimal.valueOf(3000));
         assertThat(statistics.getMinInt()).isEqualTo(BigDecimal.valueOf(-1440));
     }
 
     @Test
-    void calculateMinMaxDecimalWhenOldValuesIsNullTest(){
+    void calculateMinMaxSumDecimalWhenOldValuesIsNullTest(){
         Statistics statistics = new Statistics();
         BigDecimal newMax = BigDecimal.valueOf(100);
         BigDecimal newMin = BigDecimal.valueOf(0);
-        statistics.calculateMinMaxDecimal(newMax);
-        statistics.calculateMinMaxDecimal(newMin);
+        statistics.calculateMinMaxSumDecimal(newMax.toString());
+        statistics.calculateMinMaxSumDecimal(newMin.toString() );
         assertThat(statistics.getMaxDecimal()).isEqualTo(BigDecimal.valueOf(100));
         assertThat(statistics.getMinDecimal()).isEqualTo(BigDecimal.valueOf(0));
     }
 
     @Test
-    void calculateMinMaxDecimalWhenBothChangedTest() {
+    void calculateMinMaxSumDecimalWhenBothChangedTest() {
         Statistics statistics = new Statistics();
         statistics.setMaxDecimal(BigDecimal.valueOf(5));
         statistics.setMinDecimal(BigDecimal.valueOf(1));
         BigDecimal newMax = BigDecimal.valueOf(21);
         BigDecimal newMin = BigDecimal.valueOf(-70);
-        statistics.calculateMinMaxDecimal(newMax);
-        statistics.calculateMinMaxDecimal(newMin);
+        statistics.calculateMinMaxSumDecimal(newMax.toString());
+        statistics.calculateMinMaxSumDecimal(newMin.toString() );
         assertThat(statistics.getMaxDecimal()).isEqualTo(newMax);
         assertThat(statistics.getMinDecimal()).isEqualTo(newMin);
     }
 
     @Test
-    void calculateMinMaxDecimalWhenNothingChangedTest() {
+    void calculateMinMaxSumDecimalWhenNothingChangedTest() {
         Statistics statistics = new Statistics();
         statistics.setMaxDecimal(BigDecimal.valueOf(3000));
         statistics.setMinDecimal(BigDecimal.valueOf(-1440));
         BigDecimal maxInput = BigDecimal.valueOf(2121);
         BigDecimal minInput = BigDecimal.valueOf(-700);
-        statistics.calculateMinMaxDecimal(maxInput);
-        statistics.calculateMinMaxDecimal(minInput);
+        statistics.calculateMinMaxSumDecimal(maxInput.toString());
+        statistics.calculateMinMaxSumDecimal(minInput.toString());
         assertThat(statistics.getMaxDecimal()).isEqualTo(BigDecimal.valueOf(3000));
         assertThat(statistics.getMinDecimal()).isEqualTo(BigDecimal.valueOf(-1440));
     }
