@@ -29,6 +29,7 @@ public class Main {
         List<String> ints = new ArrayList<>();
         List<String> strings = new ArrayList<>();
         Statistics statistics = new Statistics();
+        PrintUtils printUtils = new PrintUtils(statistics);
         for(String string : INPUT_STRINGS) {
             Type type = defineStringType(string);
             statistics.processStringForStatistics(string, isFullStat, type);
@@ -49,12 +50,7 @@ public class Main {
         write(floats, "floats.txt");
         write(ints, "integers.txt");
 
-        if (isShortStat || isFullStat) {
-            statistics.printShortStatistics(strings, floats, ints);
-        }
-        if (isFullStat) {
-            statistics.getFullStatistics(floats.size(), ints.size());
-        }
+        statistics.printStatistics(isShortStat, isFullStat, printUtils, strings, ints, floats);
     }
 
     private static Type defineStringType(String string) {
