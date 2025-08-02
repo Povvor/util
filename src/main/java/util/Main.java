@@ -6,7 +6,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 public class Main {
@@ -30,10 +29,7 @@ public class Main {
         List<String> ints = new ArrayList<>();
         List<String> strings = new ArrayList<>();
         Statistics statistics = new Statistics();
-
-        Iterator<String> iterator = INPUT_STRINGS.iterator();
-        while (iterator.hasNext()) {
-            String string = iterator.next();
+        for(String string : INPUT_STRINGS) {
             Type type = defineStringType(string);
             statistics.processStringForStatistics(string, isFullStat, type);
             switch (type) {
@@ -47,8 +43,8 @@ public class Main {
                     floats.add(string);
                     break;
             }
-            iterator.remove();
         }
+
         write(strings, "strings.txt");
         write(floats, "floats.txt");
         write(ints, "integers.txt");

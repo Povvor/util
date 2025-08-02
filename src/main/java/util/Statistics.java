@@ -1,18 +1,21 @@
 package util;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 
 public class Statistics {
-    private BigDecimal minInt;
-    private BigDecimal maxInt;
-    private BigDecimal sumInt;
-    private BigDecimal minDecimal;
-    private BigDecimal maxDecimal;
-    private BigDecimal sumDecimal;
-    private Integer shortestString, longestString;
-    private int emptyStringCount;
+    private @Getter @Setter BigDecimal minInt;
+    private @Getter @Setter BigDecimal maxInt;
+    private @Getter @Setter BigDecimal sumInt;
+    private @Getter @Setter BigDecimal minDecimal;
+    private @Getter @Setter BigDecimal maxDecimal;
+    private @Getter @Setter BigDecimal sumDecimal;
+    private @Getter @Setter Integer shortestString, longestString;
+    private @Getter int emptyStringCount;
 
     public void getFullStatistics(int floatsCount, int intsCount) {
         if  (minInt != null) {
@@ -50,10 +53,12 @@ public class Statistics {
 
         switch (type) {
             case FLOAT:
-                calculateMinMaxSumDecimal(string);
+                BigDecimal bigDecimal = new BigDecimal(string);
+                calculateMinMaxSumDecimal(bigDecimal);
                 break;
             case INTEGER:
-                calculateMinMaxSumInteger(string);
+                BigDecimal bigInteger = new BigDecimal(string);
+                calculateMinMaxSumInteger(bigInteger);
                 break;
             case  STRING:
                 calculateMinMaxStringLength(string);
@@ -69,8 +74,7 @@ public class Statistics {
         System.out.println();
     }
 
-    public void calculateMinMaxSumDecimal(String string) {
-        BigDecimal bigDecimal = new BigDecimal(string);
+    public void calculateMinMaxSumDecimal(BigDecimal bigDecimal) {
         if (minDecimal == null || maxDecimal == null || sumDecimal == null) {
             minDecimal = bigDecimal;
             maxDecimal = bigDecimal;
@@ -86,8 +90,7 @@ public class Statistics {
         }
     }
 
-    public void calculateMinMaxSumInteger(String string) {
-        BigDecimal bigInteger = new BigDecimal(string);
+    public void calculateMinMaxSumInteger(BigDecimal bigInteger) {
         if (minInt == null || maxInt == null || sumInt == null) {
             minInt = bigInteger;
             maxInt = bigInteger;
@@ -116,78 +119,6 @@ public class Statistics {
                 longestString = length;
             }
         }
-    }
-
-    public BigDecimal getMinInt() {
-        return minInt;
-    }
-
-    public void setMinInt(BigDecimal minInt) {
-        this.minInt = minInt;
-    }
-
-    public BigDecimal getMaxInt() {
-        return maxInt;
-    }
-
-    public void setMaxInt(BigDecimal maxInt) {
-        this.maxInt = maxInt;
-    }
-
-    public BigDecimal getMinDecimal() {
-        return minDecimal;
-    }
-
-    public void setMinDecimal(BigDecimal minDecimal) {
-        this.minDecimal = minDecimal;
-    }
-
-    public BigDecimal getMaxDecimal() {
-        return maxDecimal;
-    }
-
-    public void setMaxDecimal(BigDecimal maxDecimal) {
-        this.maxDecimal = maxDecimal;
-    }
-
-    public Integer getShortestString() {
-        return shortestString;
-    }
-
-    public void setShortestString(Integer shortestString) {
-        this.shortestString = shortestString;
-    }
-
-    public Integer getLongestString() {
-        return longestString;
-    }
-
-    public void setLongestString(Integer longestString) {
-        this.longestString = longestString;
-    }
-
-    public BigDecimal getSumInt() {
-        return sumInt;
-    }
-
-    public void setSumInt(BigDecimal sumInt) {
-        this.sumInt = sumInt;
-    }
-
-    public BigDecimal getSumDecimal() {
-        return sumDecimal;
-    }
-
-    public void setSumDecimal(BigDecimal sumDecimal) {
-        this.sumDecimal = sumDecimal;
-    }
-
-    public int getEmptyStringCount() {
-        return emptyStringCount;
-    }
-
-    public void setEmptyStringCount(int emptyStringCount) {
-        this.emptyStringCount = emptyStringCount;
     }
 
     private void printStatisticsForEachType(Number min, Number max, Number sum, Number avg) {
