@@ -5,16 +5,16 @@ import java.math.RoundingMode;
 import java.util.List;
 
 public class Statistics {
-    private static BigDecimal minInt;
-    private static BigDecimal maxInt;
-    private static BigDecimal sumInt = BigDecimal.valueOf(0);
-    private static BigDecimal minDecimal;
-    private static BigDecimal maxDecimal;
-    private static BigDecimal sumDecimal = BigDecimal.valueOf(0);
-    private static Integer shortestString, longestString;
-    private static int intCount, decCount, emptyStringCount;
+    public BigDecimal minInt;
+    public BigDecimal maxInt;
+    public BigDecimal sumInt = BigDecimal.valueOf(0);
+    public BigDecimal minDecimal;
+    public BigDecimal maxDecimal;
+    public BigDecimal sumDecimal = BigDecimal.valueOf(0);
+    public Integer shortestString, longestString;
+    public int intCount, decCount, emptyStringCount;
 
-    public static void getFullStatistics() {
+    public void getFullStatistics() {
         if  (minInt != null) {
             BigDecimal avgInt = sumInt.divide(BigDecimal.valueOf(intCount), RoundingMode.HALF_UP);
             System.out.println("Полная статистика для целых чисел:");
@@ -39,7 +39,7 @@ public class Statistics {
         }
     }
 
-    public static void processStringForStatistics(String string, boolean shouldProceed, Type type) {
+    public void processStringForStatistics(String string, boolean shouldProceed, Type type) {
         if (!shouldProceed) {
             return;
         }
@@ -67,7 +67,7 @@ public class Statistics {
         }
     }
 
-    public static void printShortStatistics(List<String> strings, List<String> floats, List<String> ints) {
+    public void printShortStatistics(List<String> strings, List<String> floats, List<String> ints) {
         System.out.println("Краткая статистика:");
         System.out.println("Количество записанных целых чисел: " + ints.size());
         System.out.println("Количество записанных действительных чисел: " + floats.size());
@@ -75,22 +75,7 @@ public class Statistics {
         System.out.println();
     }
 
-    private static void printStatisticsForEachType(Number min, Number max, Number sum, Number avg) {
-        System.out.println("Минимальное число: " + min);
-        System.out.println("Максимальное число: " + max);
-        System.out.println("Сумма: " + sum);
-        System.out.println("Среднее значение: " + avg);
-        System.out.println();
-    }
-
-    private static void printStatisticsForEachType(int shortest, int longest) {
-        System.out.println("Самая короткая строка: " + shortest + " символов.");
-        System.out.println("Самая длинная строка: " + longest + " символов.");
-        System.out.println("Обнаружено пустых строк: " + emptyStringCount);
-        System.out.println();
-    }
-
-    private static void calculateMinMaxDecimal(BigDecimal bigDecimal) {
+    public void calculateMinMaxDecimal(BigDecimal bigDecimal) {
         if (minDecimal == null || maxDecimal == null) {
             minDecimal = bigDecimal;
             maxDecimal = bigDecimal;
@@ -104,8 +89,8 @@ public class Statistics {
         }
     }
 
-    private static void calculateMinMaxInteger(BigDecimal bigDecimal) {
-        if (minDecimal == null || maxDecimal == null) {
+    public void calculateMinMaxInteger(BigDecimal bigDecimal) {
+        if (minInt == null || maxInt == null) {
             minInt = bigDecimal;
             maxInt = bigDecimal;
         } else  {
@@ -118,7 +103,7 @@ public class Statistics {
         }
     }
 
-    private static void calculateMinMaxStringLength(String string) {
+    public void calculateMinMaxStringLength(String string) {
         int length = string.length();
         if (shortestString == null || longestString == null) {
             shortestString = length;
@@ -131,5 +116,20 @@ public class Statistics {
                 longestString = length;
             }
         }
+    }
+
+    private void printStatisticsForEachType(Number min, Number max, Number sum, Number avg) {
+        System.out.println("Минимальное число: " + min);
+        System.out.println("Максимальное число: " + max);
+        System.out.println("Сумма: " + sum);
+        System.out.println("Среднее значение: " + avg);
+        System.out.println();
+    }
+
+    private void printStatisticsForEachType(int shortest, int longest) {
+        System.out.println("Самая короткая строка: " + shortest + " символов.");
+        System.out.println("Самая длинная строка: " + longest + " символов.");
+        System.out.println("Обнаружено пустых строк: " + emptyStringCount);
+        System.out.println();
     }
 }

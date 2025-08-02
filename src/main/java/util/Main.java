@@ -29,12 +29,13 @@ public class Main {
         List<String> floats = new ArrayList<>();
         List<String> ints = new ArrayList<>();
         List<String> strings = new ArrayList<>();
+        Statistics statistics = new Statistics();
 
         Iterator<String> iterator = INPUT_STRINGS.iterator();
         while (iterator.hasNext()) {
             String string = iterator.next();
             Type type = defineStringType(string);
-            Statistics.processStringForStatistics(string, isFullStat, type);
+            statistics.processStringForStatistics(string, isFullStat, type);
             switch (type) {
                 case STRING:
                     strings.add(string);
@@ -53,10 +54,10 @@ public class Main {
         write(ints, "integers.txt");
 
         if (isShortStat || isFullStat) {
-            Statistics.printShortStatistics(strings, floats, ints);
+            statistics.printShortStatistics(strings, floats, ints);
         }
         if (isFullStat) {
-            Statistics.getFullStatistics();
+            statistics.getFullStatistics();
         }
     }
 
