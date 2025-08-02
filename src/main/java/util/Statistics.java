@@ -5,14 +5,14 @@ import java.math.RoundingMode;
 import java.util.List;
 
 public class Statistics {
-    public BigDecimal minInt;
-    public BigDecimal maxInt;
-    public BigDecimal sumInt = BigDecimal.valueOf(0);
-    public BigDecimal minDecimal;
-    public BigDecimal maxDecimal;
-    public BigDecimal sumDecimal = BigDecimal.valueOf(0);
-    public Integer shortestString, longestString;
-    public int intCount, decCount, emptyStringCount;
+    private BigDecimal minInt;
+    private BigDecimal maxInt;
+    private BigDecimal sumInt = BigDecimal.valueOf(0);
+    private BigDecimal minDecimal;
+    private BigDecimal maxDecimal;
+    private BigDecimal sumDecimal = BigDecimal.valueOf(0);
+    private Integer shortestString, longestString;
+    private int intCount, decCount, emptyStringCount;
 
     public void getFullStatistics() {
         if  (minInt != null) {
@@ -116,6 +116,54 @@ public class Statistics {
                 longestString = length;
             }
         }
+    }
+
+    public BigDecimal getMinInt() {
+        return minInt;
+    }
+
+    public void setMinInt(BigDecimal minInt) {
+        this.minInt = minInt;
+    }
+
+    public BigDecimal getMaxInt() {
+        return maxInt;
+    }
+
+    public void setMaxInt(BigDecimal maxInt) {
+        this.maxInt = maxInt;
+    }
+
+    public BigDecimal getMinDecimal() {
+        return minDecimal;
+    }
+
+    public void setMinDecimal(BigDecimal minDecimal) {
+        this.minDecimal = minDecimal;
+    }
+
+    public BigDecimal getMaxDecimal() {
+        return maxDecimal;
+    }
+
+    public void setMaxDecimal(BigDecimal maxDecimal) {
+        this.maxDecimal = maxDecimal;
+    }
+
+    public Integer getShortestString() {
+        return shortestString;
+    }
+
+    public void setShortestString(Integer shortestString) {
+        this.shortestString = shortestString;
+    }
+
+    public Integer getLongestString() {
+        return longestString;
+    }
+
+    public void setLongestString(Integer longestString) {
+        this.longestString = longestString;
     }
 
     private void printStatisticsForEachType(Number min, Number max, Number sum, Number avg) {
