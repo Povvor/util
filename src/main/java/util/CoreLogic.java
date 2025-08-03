@@ -92,7 +92,7 @@ public class CoreLogic {
         return inputStrings;
     }
 
-    private void write(List<String> outputStrings, String fileName) {
+    public void write(List<String> outputStrings, String fileName) {
         try {
             if (!outputStrings.isEmpty()) {
                 Files.write(Paths.get(path + prefix + fileName), outputStrings, StandardOpenOption.CREATE, toRewrite);
