@@ -63,4 +63,14 @@ public class PrintUtils {
                 break;
         }
     }
+
+    public void printHelp() {
+        System.out.println("Опции:");
+        System.out.println("  -p        Добавляет префикс к созданным файлам.");
+        System.out.println("  -o        Задать путь для результатов");
+        System.out.println("  -s        Вывод краткой статистики");
+        System.out.println("  -f        Вывод полной статистики");
+        System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
+    }
+
 }

@@ -51,19 +51,19 @@ public class Statistics {
         switch (type) {
             case FLOAT:
                 BigDecimal bigDecimal = new BigDecimal(string);
-                calculateMinMaxSumDecimal(bigDecimal);
+                updateFloatMinMaxAndSum(bigDecimal);
                 break;
             case INTEGER:
                 BigDecimal bigInteger = new BigDecimal(string);
-                calculateMinMaxSumInteger(bigInteger);
+                updateIntegerMinMaxAndSum(bigInteger);
                 break;
             case  STRING:
-                calculateMinMaxStringLength(string);
+                updateStringMinMaxAndSum(string);
                 break;
         }
     }
 
-    public void calculateMinMaxSumDecimal(BigDecimal bigDecimal) {
+    public void updateFloatMinMaxAndSum(BigDecimal bigDecimal) {
         if (minDecimal == null || maxDecimal == null || sumDecimal == null) {
             minDecimal = bigDecimal;
             maxDecimal = bigDecimal;
@@ -79,7 +79,7 @@ public class Statistics {
         }
     }
 
-    public void calculateMinMaxSumInteger(BigDecimal bigInteger) {
+    public void updateIntegerMinMaxAndSum(BigDecimal bigInteger) {
         if (minInt == null || maxInt == null || sumInt == null) {
             minInt = bigInteger;
             maxInt = bigInteger;
@@ -95,7 +95,7 @@ public class Statistics {
         }
     }
 
-    public void calculateMinMaxStringLength(String string) {
+    public void updateStringMinMaxAndSum(String string) {
         int length = string.length();
         if (shortestString == null || longestString == null) {
             shortestString = length;
