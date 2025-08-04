@@ -200,8 +200,8 @@ class StatisticsTest {
         statistics.setSumInt(intSum);
         statistics.setSumDecimal(floatSum);
         statistics.calculateAvg(floatCount, intCount);
-        BigDecimal expectedFloat = floatSum.divide(BigDecimal.valueOf(floatCount), RoundingMode.HALF_UP);
-        BigDecimal expectedInt =  intSum.divide(BigDecimal.valueOf(intCount), RoundingMode.HALF_UP);
+        BigDecimal expectedFloat = floatSum.divide(BigDecimal.valueOf(floatCount), 10, RoundingMode.HALF_UP);
+        BigDecimal expectedInt =  intSum.divide(BigDecimal.valueOf(intCount), 10, RoundingMode.HALF_UP);
         assertThat(statistics.getIntAvg()).isEqualTo(expectedInt);
         assertThat(statistics.getDecimalAvg()).isEqualTo(expectedFloat);
     }

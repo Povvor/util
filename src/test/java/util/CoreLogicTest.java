@@ -24,6 +24,7 @@ class CoreLogicTest {
         assertThat(resultString).isEqualTo(Type.STRING);
         assertThat(resultInteger).isEqualTo(Type.INTEGER);
         assertThat(resultFloat).isEqualTo(Type.FLOAT);
+
     }
 
     @Test
@@ -43,7 +44,7 @@ class CoreLogicTest {
     }
 
     @Test
-    void processStringTest() {
+    void processStringTest() throws IOException {
         CoreLogic coreLogic = new CoreLogic();
         coreLogic.setPath("src/test/java/resources/writeTest");
         String[] input = {"hello", "world", "!!!", "1", "11", "21.2"};
@@ -51,6 +52,9 @@ class CoreLogicTest {
         for (String string : input) {
             coreLogic.processString(string);
         }
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/floats.txt"));
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/integers.txt"));
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/strings.txt"));
         assertThat(coreLogic.getStringCount()).isEqualTo(3);
         assertThat(coreLogic.getIntCount()).isEqualTo(2);
         assertThat(coreLogic.getFloatCount()).isEqualTo(1);
@@ -63,7 +67,7 @@ class CoreLogicTest {
         String filePath = "src/test/java/resources/writeTest";
         Path path = Paths.get(filePath + '/' + fileName);
         coreLogic.setPath(filePath);
-        String[] strings = { "hello", "world", "!!!", "1", "11", "21.2" };
+        String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
         Stream<String> stream = Stream.of(strings);
         BufferedWriter writer;
         writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -79,7 +83,7 @@ class CoreLogicTest {
     void writeTestWhenReadOnly() throws IOException {
         CoreLogic coreLogic = new CoreLogic();
         String path = "src/test/java/readOnly.txt";
-        String[] strings = { "hello", "world", "!!!", "1", "11", "21.2" };
+        String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
         Stream<String> stream = Stream.of(strings);
         BufferedWriter writer;
         writer = Files.newBufferedWriter(Paths.get(path), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
@@ -104,5 +108,27 @@ class CoreLogicTest {
         String[] input = {"-s", "prefix", "-p"};
         String result = coreLogic.findValueAfterArg(input, 2);
         assertThat(result).isEmpty();
+
+    }
+
+    @Test
+    void closeWritersTest() throws IOException {
+        CoreLogic coreLogic = new CoreLogic();
+        String fileName = "writeTest.txt";
+        String filePath = "src/test/java/resources/writeTest";
+        Path path = Paths.get(filePath + '/' + fileName);
+        coreLogic.setPath(filePath);
+        String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
+        Stream<String> stream = Stream.of(strings);
+        BufferedWriter writer;
+        writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        stream.forEach(string -> coreLogic.write(writer, string));
+        writer.close();
+        stream = Stream.of(strings);
+        stream.forEach(string -> coreLogic.write(writer, string));
+        List<String> result = Files.readAllLines(path);
+        assertThat(result.size()).isEqualTo(strings.length);
+        assertThat(result).isEqualTo(List.of(strings));
+        Files.deleteIfExists(path);
     }
 }
