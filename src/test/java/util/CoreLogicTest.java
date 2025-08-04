@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 class CoreLogicTest {
 
     @Test
-    void defineStringTypeTest()  {
+    void defineStringTypeTest() {
         CoreLogic coreLogic = new CoreLogic();
         Type resultString = coreLogic.defineStringType("Hello World!");
         Type resultInteger = coreLogic.defineStringType("42");
@@ -25,21 +26,23 @@ class CoreLogicTest {
     }
 
     @Test
-    void initInputStringsWhenWrongInput() {
+    void parseArgsTest() {
         CoreLogic coreLogic = new CoreLogic();
-        String image = "src/test/java/resources/testImg.png";
-        String wrongPath = "src/test/java/test.txt";
-        String suitableFile = "src/test/java/resources/test.txt";
-        coreLogic.getFiles().add(image);
-        coreLogic.getFiles().add(wrongPath);
-        coreLogic.getFiles().add(suitableFile);
-        List<String> result = coreLogic.initInputStrings();
-        assertThat(result.size()).isEqualTo(1);
-        assertThat(result.get(0)).isEqualTo("text");
+        String prefix = "prefix";
+        String path = "path";
+        String filename = "file.txt";
+        String[] args = {"-s", "-f", "-a", "-p", prefix, "-o", path, filename};
+        coreLogic.parseArgs(args);
+        assertThat(coreLogic.isShortStat()).isTrue();
+        assertThat(coreLogic.isFullStat()).isTrue();
+        assertThat(coreLogic.getToRewrite()).isEqualTo(StandardOpenOption.APPEND);
+        assertThat(coreLogic.getPrefix()).isEqualTo(prefix);
+        assertThat(coreLogic.getPath()).isEqualTo(path);
+        assertThat(coreLogic.getFiles().get(0)).isEqualTo(filename);
     }
 
     @Test
-    void processStringTest()  {
+    void processStringTest() {
         CoreLogic coreLogic = new CoreLogic();
         String[] input = {"hello", "world", "!!!", "1", "11", "21.2"};
         for (String string : input) {
@@ -53,10 +56,14 @@ class CoreLogicTest {
     @Test
     void writeTest() {
         CoreLogic coreLogic = new CoreLogic();
-        Path path = Paths.get("src/test/java/resources/writeTest.txt");
+        String fileName = "writeTest.txt";
+        String filePath = "src/test/java/resources/writeTest";
+        Path path = Paths.get(filePath + '/' + fileName);
+        coreLogic.setPath(filePath);
         List<String> input = Arrays.asList("hello", "world", "!!!");
-        coreLogic.write(input, path.toString());
+        coreLogic.write(input, fileName);
         List<String> result;
+
         try {
             result = Files.readAllLines(path);
             assertThat(result.size()).isEqualTo(input.size());
@@ -79,5 +86,67 @@ class CoreLogicTest {
             throw new RuntimeException(e);
         }
         assertThat(result).size().isEqualTo(0);
+    }
+
+    @Test
+    void findValueAfterArgTest() {
+        CoreLogic coreLogic = new CoreLogic();
+        String[] input = {"-p", "prefix"};
+        String result = coreLogic.findValueAfterArg(input, 0);
+        String expected = input[1];
+        assertThat(result).isEqualTo(expected);
+    }
+
+    @Test
+    void findValueAfterArgTestWhenError() {
+        CoreLogic coreLogic = new CoreLogic();
+        String[] input = {"-s", "prefix", "-p"};
+        String result = coreLogic.findValueAfterArg(input, 2);
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void writeAllAndShowStatisticsWhenStringsNotEmpty() {
+        CoreLogic coreLogic = new CoreLogic();
+        Path path = Paths.get("src/test/java/resources/writeTest");
+        coreLogic.setPath(path.toString());
+        String string = "string";
+        String integer = "42";
+        String floatingPoint = "3.14";
+        coreLogic.getStringOutput().add(string);
+        coreLogic.getIntegerOutput().add(integer);
+        coreLogic.getFloatOutput().add(floatingPoint);
+        coreLogic.writeAllAndShowStatistics();
+        Path strings = Paths.get(path + "/strings.txt");
+        Path integers = Paths.get(path + "/integers.txt");
+        Path floats = Paths.get(path + "/floats.txt");
+        System.out.printf(path.toString());
+        try {
+            assertThat(Files.readAllLines(strings).get(0)).isEqualTo(string);
+            assertThat(Files.readAllLines(integers).get(0)).isEqualTo(integer);
+            assertThat(Files.readAllLines(floats).get(0)).isEqualTo(floatingPoint);
+            Files.deleteIfExists(strings);
+            Files.deleteIfExists(integers);
+            Files.deleteIfExists(floats);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Test
+    void writeAllAndShowStatisticsWhenStringsAreEmpty() {
+        CoreLogic coreLogic = new CoreLogic();
+        Path path = Paths.get("src/test/java/resources/writeTest");
+        coreLogic.setPath(path.toString());
+        coreLogic.writeAllAndShowStatistics();
+        Path strings = Paths.get(path + "strings.txt");
+        Path integers = Paths.get(path + "integers.txt");
+        Path floats = Paths.get(path + "floats.txt");
+        assertThatThrownBy(() -> Files.readAllLines(strings))
+                .isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> Files.readAllLines(integers))
+                .isInstanceOf(IOException.class);
+        assertThatThrownBy(() -> Files.readAllLines(floats))
+                .isInstanceOf(IOException.class);
     }
 }

@@ -34,7 +34,7 @@ public class Statistics {
         }
     }
 
-    private void calculateAvg (int floatsCount, int intsCount) {
+    public void calculateAvg(int floatsCount, int intsCount) {
         decimalAvg = sumDecimal.divide(BigDecimal.valueOf(floatsCount), RoundingMode.HALF_UP);
         intAvg = sumInt.divide(BigDecimal.valueOf(intsCount), RoundingMode.HALF_UP);
     }
@@ -60,6 +60,8 @@ public class Statistics {
             case  STRING:
                 updateStringMinMaxAndSum(string);
                 break;
+            default:
+                System.out.println("Неизвестный тип данных");
         }
     }
 

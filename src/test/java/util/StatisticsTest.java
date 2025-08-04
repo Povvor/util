@@ -3,6 +3,8 @@ package util;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 class StatisticsTest {
@@ -42,7 +44,7 @@ class StatisticsTest {
     }
 
     @Test
-    void updateIntegerMinMaxAndSumWhenOldValuesIsNull(){
+    void updateIntegerMinMaxAndSumWhenOldValuesIsNull() {
         Statistics statistics = new Statistics();
         statistics.setSumInt(BigDecimal.ZERO);
         BigDecimal newMax = BigDecimal.valueOf(100);
@@ -97,7 +99,7 @@ class StatisticsTest {
         }
 
     @Test
-    void updateFloatMinMaxAndSumWhenOldValuesIsNull(){
+    void updateFloatMinMaxAndSumWhenOldValuesIsNull() {
         Statistics statistics = new Statistics();
         statistics.setSumInt(BigDecimal.ZERO);
         BigDecimal newMax = BigDecimal.valueOf(100);
@@ -186,5 +188,21 @@ class StatisticsTest {
         statistics.updateStringMinMaxAndSum(inputLong);
         assertThat(statistics.getShortestString()).isEqualTo(1);
         assertThat(statistics.getLongestString()).isEqualTo(20);
+    }
+
+    @Test
+    void calculateAvgTest() {
+        Statistics statistics = new Statistics();
+        BigDecimal floatSum = BigDecimal.valueOf(-12.1);
+        BigDecimal intSum = BigDecimal.valueOf(1000);
+        int floatCount = 11;
+        int intCount = 10;
+        statistics.setSumInt(intSum);
+        statistics.setSumDecimal(floatSum);
+        statistics.calculateAvg(floatCount, intCount);
+        BigDecimal expectedFloat = floatSum.divide(BigDecimal.valueOf(floatCount), RoundingMode.HALF_UP);
+        BigDecimal expectedInt =  intSum.divide(BigDecimal.valueOf(intCount), RoundingMode.HALF_UP);
+        assertThat(statistics.getIntAvg()).isEqualTo(expectedInt);
+        assertThat(statistics.getDecimalAvg()).isEqualTo(expectedFloat);
     }
 }

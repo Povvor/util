@@ -61,6 +61,8 @@ public class PrintUtils {
                 System.out.println("Обнаружено пустых строк: " + statistics.getEmptyStringCount());
                 System.out.println();
                 break;
+            default:
+                System.out.println("Неизвестный тип данных");
         }
     }
 
@@ -71,6 +73,12 @@ public class PrintUtils {
         System.out.println("  -s        Вывод краткой статистики");
         System.out.println("  -f        Вывод полной статистики");
         System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
+    }
+
+    public void printFileOpenError(Exception e, String fileName) {
+        System.out.println("Возникла проблема при обработке файла: " + fileName);
+        System.out.println(e.getClass().getSimpleName());
+        System.out.println("Данный файл проигнорирован\n");
     }
 
 }
