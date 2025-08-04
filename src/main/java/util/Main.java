@@ -5,6 +5,5 @@ public class Main {
         CoreLogic coreLogic = new CoreLogic();
         coreLogic.parseArgs(args);
         coreLogic.processFiles();
-        coreLogic.writeAllAndShowStatistics();
     }
 }

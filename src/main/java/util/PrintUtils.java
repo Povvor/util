@@ -1,7 +1,5 @@
 package util;
 
-import java.util.List;
-
 public class PrintUtils {
     private final Statistics statistics;
 
@@ -31,11 +29,11 @@ public class PrintUtils {
         }
     }
 
-    public void printShortStatistics(List<String> strings, List<String> floats, List<String> ints) {
+    public void printShortStatistics(int stringCount, int integerCount, int floatCount) {
         System.out.println("Краткая статистика:");
-        System.out.println("Количество записанных целых чисел: " + ints.size());
-        System.out.println("Количество записанных действительных чисел: " + floats.size());
-        System.out.println("Количество записанных строк:  " + strings.size());
+        System.out.println("Количество записанных целых чисел: " + integerCount);
+        System.out.println("Количество записанных действительных чисел: " + floatCount);
+        System.out.println("Количество записанных строк:  " + stringCount);
         System.out.println();
     }
 
@@ -43,7 +41,7 @@ public class PrintUtils {
         switch (type) {
             case INTEGER:
                 System.out.println("Минимальное число: " + statistics.getMinInt());
-                System.out.println("Максимальное число: " + statistics.getMaxDecimal());
+                System.out.println("Максимальное число: " + statistics.getMaxInt());
                 System.out.println("Сумма: " + statistics.getSumInt());
                 System.out.println("Среднее значение: " + statistics.getIntAvg());
                 System.out.println();

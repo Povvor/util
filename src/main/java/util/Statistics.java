@@ -5,7 +5,6 @@ import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 
 public class Statistics {
     private @Getter @Setter BigDecimal minInt;
@@ -22,21 +21,28 @@ public class Statistics {
             Boolean isShortStat,
             Boolean isFullStat,
             PrintUtils printUtils,
-            List<String> strings,
-            List<String> ints,
-            List<String> floats) {
+            int stringCount,
+            int floatCount,
+            int intCount) {
+        if (stringCount == 0 && floatCount == 0 && intCount == 0) {
+            return;
+        }
         if (isShortStat || isFullStat) {
-            printUtils.printShortStatistics(strings, floats, ints);
+            printUtils.printShortStatistics(stringCount, floatCount, intCount);
         }
         if (isFullStat) {
-            calculateAvg(floats.size(), ints.size());
+            calculateAvg(floatCount, intCount);
             printUtils.getFullStatistics();
         }
     }
 
     public void calculateAvg(int floatsCount, int intsCount) {
-        decimalAvg = sumDecimal.divide(BigDecimal.valueOf(floatsCount), RoundingMode.HALF_UP);
-        intAvg = sumInt.divide(BigDecimal.valueOf(intsCount), RoundingMode.HALF_UP);
+        if (sumDecimal != null) {
+            decimalAvg = sumDecimal.divide(BigDecimal.valueOf(floatsCount), 10,  RoundingMode.HALF_UP);
+        }
+        if (sumInt != null) {
+            intAvg = sumInt.divide(BigDecimal.valueOf(intsCount), 10,  RoundingMode.HALF_UP);
+        }
     }
 
     public void processStringForStatistics(String string, boolean shouldProceed, Type type) {

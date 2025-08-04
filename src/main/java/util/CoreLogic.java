@@ -3,6 +3,7 @@ package util;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.BufferedWriter;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.file.Files;
@@ -17,22 +18,24 @@ public class CoreLogic {
     private @Getter final List<String> integerOutput = new ArrayList<>();
     private @Getter final List<String> floatOutput = new ArrayList<>();
     private @Getter final List<String> stringOutput = new ArrayList<>();
+    private @Getter int stringCount, intCount, floatCount;
     private @Getter boolean isShortStat = false;
     private @Getter boolean isFullStat = false;
     private @Getter StandardOpenOption toRewrite = StandardOpenOption.TRUNCATE_EXISTING;
     private @Getter String prefix = "";
     private @Getter @Setter String path = "";
-    private final Statistics statistics = new Statistics();
+    private final @Getter Statistics statistics = new Statistics();
     private final PrintUtils printUtils = new PrintUtils(statistics);
+    private @Getter BufferedWriter stringWriter, floatWriter, integerWriter;
 
     public void processFiles() {
         for (String fileName : files) {
-            try (Stream<String> strings = Files.lines(Paths.get(fileName))) {
-                strings.forEach(this::processString);
-            } catch (IOException e) {
-                printUtils.printFileOpenError(e, fileName);
+            Stream<String> strings = readFile(fileName);
+            initWriters();
+            strings.forEach(this::processString);
             }
-        }
+        statistics.printStatistics(isShortStat, isFullStat, printUtils, stringCount, floatCount, intCount);
+        closeWriters();
     }
 
     public Type defineStringType(String string) {
@@ -83,38 +86,71 @@ public class CoreLogic {
         }
     }
 
-    public void write(List<String> outputStrings, String fileName) {
-        try {
-            if (!outputStrings.isEmpty()) {
-                Files.write(Paths.get(path + '/' + prefix + fileName), outputStrings, StandardOpenOption.CREATE, toRewrite);
-            }
-        } catch (IOException e) {
-            System.out.println("Ошибка при записи в файл: " + fileName);
-        }
-    }
-
-    public void writeAllAndShowStatistics() {
-        write(stringOutput, "strings.txt");
-        write(floatOutput, "floats.txt");
-        write(integerOutput, "integers.txt");
-        statistics.printStatistics(isShortStat, isFullStat, printUtils, stringOutput, integerOutput, floatOutput);
-    }
-
     public void processString(String inputString) {
         Type type = defineStringType(inputString);
         statistics.processStringForStatistics(inputString, isFullStat, type);
         switch (type) {
             case STRING:
-                stringOutput.add(inputString);
+                write(stringWriter, inputString);
+                stringCount++;
+                break;
+            case FLOAT:
+                write(floatWriter, inputString);
+                floatCount++;
                 break;
             case INTEGER:
-                integerOutput.add(inputString);
-                break;
-            case  FLOAT:
-                floatOutput.add(inputString);
+                write(integerWriter, inputString);
+                intCount++;
                 break;
             default:
                 System.out.println("Неизвестный тип данных");
+        }
+    }
+
+    public void write(BufferedWriter writer, String string) {
+        try {
+            writer.write(string);
+            writer.newLine();
+        } catch (IOException e) {
+            printUtils.printFileOpenError(e, writer.toString());
+        }
+    }
+
+    public void initWriters() {
+        try {
+            stringWriter = Files.newBufferedWriter(Paths.get(path + '/' + prefix + "strings.txt"), StandardOpenOption.CREATE, toRewrite);
+        } catch (IOException e) {
+            printUtils.printFileOpenError(e, path + "/" + prefix + "strings.txt");
+        }
+        try {
+            floatWriter = Files.newBufferedWriter(Paths.get(path + '/' + prefix + "floats.txt"), StandardOpenOption.CREATE, toRewrite);
+        } catch (IOException e) {
+            printUtils.printFileOpenError(e, path + "/" + prefix + "floats.txt");
+        }
+        try {
+            integerWriter = Files.newBufferedWriter(Paths.get(path + '/' + prefix + "integers.txt"), StandardOpenOption.CREATE, toRewrite);
+        } catch (IOException e) {
+            printUtils.printFileOpenError(e, path + "/" + prefix + "integers.txt");
+        }
+    }
+
+    public void closeWriters() {
+        try {
+            stringWriter.close();
+            floatWriter.close();
+            integerWriter.close();
+        } catch (IOException e) {
+            System.out.println("Ошибка при закрытии потока!");
+        }
+
+    }
+
+    public Stream<String> readFile(String fileName) {
+        try {
+            return Files.lines(Paths.get(fileName));
+        } catch (IOException e) {
+            printUtils.printFileOpenError(e, fileName);
+            return Stream.empty(); // безопасный fallback
         }
     }
 }
