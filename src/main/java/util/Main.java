@@ -1,9 +1,11 @@
 package util;
+
+import lombok.Getter;
+
 public class Main {
+    private @Getter static final CoreLogic CORE_LOGIC = new CoreLogic();
 
     public static void main(String[] args) {
-        CoreLogic coreLogic = new CoreLogic();
-        coreLogic.parseArgs(args);
-        coreLogic.processFiles();
+        CORE_LOGIC.run(args);
     }
 }

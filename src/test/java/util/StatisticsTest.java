@@ -40,7 +40,7 @@ class StatisticsTest {
         Statistics statistics = new Statistics();
         String input = "1.2";
         statistics.processStringForStatistics(input, true, Type.FLOAT);
-        assertThat(statistics.getSumDecimal()).isNotNull();
+        assertThat(statistics.getSumFloat()).isNotNull();
     }
 
     @Test
@@ -106,38 +106,38 @@ class StatisticsTest {
         BigDecimal newMin = BigDecimal.valueOf(0);
         statistics.updateFloatMinMaxAndSum(newMax);
         statistics.updateFloatMinMaxAndSum(newMin);
-        assertThat(statistics.getMaxDecimal()).isEqualTo(newMax);
-        assertThat(statistics.getMinDecimal()).isEqualTo(newMin);
+        assertThat(statistics.getMaxFloat()).isEqualTo(newMax);
+        assertThat(statistics.getMinFloat()).isEqualTo(newMin);
     }
 
     @Test
     void updateFloatMinMaxAndSumWhenBothChanged() {
         Statistics statistics = new Statistics();
-        statistics.setSumDecimal(BigDecimal.ZERO);
-        statistics.setMaxDecimal(BigDecimal.valueOf(5));
-        statistics.setMinDecimal(BigDecimal.valueOf(1));
+        statistics.setSumFloat(BigDecimal.ZERO);
+        statistics.setMaxFloat(BigDecimal.valueOf(5));
+        statistics.setMinFloat(BigDecimal.valueOf(1));
         BigDecimal newMax = BigDecimal.valueOf(21);
         BigDecimal newMin = BigDecimal.valueOf(-70);
         statistics.updateFloatMinMaxAndSum(newMax);
         statistics.updateFloatMinMaxAndSum(newMin);
-        assertThat(statistics.getMaxDecimal()).isEqualTo(newMax);
-        assertThat(statistics.getMinDecimal()).isEqualTo(newMin);
+        assertThat(statistics.getMaxFloat()).isEqualTo(newMax);
+        assertThat(statistics.getMinFloat()).isEqualTo(newMin);
     }
 
     @Test
     void updateFloatMinMaxAndSumWhenNothingChanged() {
         Statistics statistics = new Statistics();
-        statistics.setSumDecimal(BigDecimal.ZERO);
+        statistics.setSumFloat(BigDecimal.ZERO);
         BigDecimal oldMax = BigDecimal.valueOf(3000);
         BigDecimal oldMin = BigDecimal.valueOf(-1440);
-        statistics.setMaxDecimal(oldMax);
-        statistics.setMinDecimal(oldMin);
+        statistics.setMaxFloat(oldMax);
+        statistics.setMinFloat(oldMin);
         BigDecimal maxInput = BigDecimal.valueOf(2121);
         BigDecimal minInput = BigDecimal.valueOf(-700);
         statistics.updateFloatMinMaxAndSum(maxInput);
         statistics.updateFloatMinMaxAndSum(minInput);
-        assertThat(statistics.getMaxDecimal()).isEqualTo(oldMax);
-        assertThat(statistics.getMinDecimal()).isEqualTo(oldMin);
+        assertThat(statistics.getMaxFloat()).isEqualTo(oldMax);
+        assertThat(statistics.getMinFloat()).isEqualTo(oldMin);
     }
 
     @Test
@@ -150,7 +150,7 @@ class StatisticsTest {
         statistics.updateFloatMinMaxAndSum(input2);
         statistics.updateFloatMinMaxAndSum(input3);
         BigDecimal expected = input1.add(input2.add(input3));
-        assertThat(statistics.getSumDecimal()).isEqualTo(expected);
+        assertThat(statistics.getSumFloat()).isEqualTo(expected);
     }
 
     @Test
@@ -198,11 +198,11 @@ class StatisticsTest {
         int floatCount = 11;
         int intCount = 10;
         statistics.setSumInt(intSum);
-        statistics.setSumDecimal(floatSum);
+        statistics.setSumFloat(floatSum);
         statistics.calculateAvg(floatCount, intCount);
         BigDecimal expectedFloat = floatSum.divide(BigDecimal.valueOf(floatCount), 10, RoundingMode.HALF_UP);
-        BigDecimal expectedInt =  intSum.divide(BigDecimal.valueOf(intCount), 10, RoundingMode.HALF_UP);
+        BigDecimal expectedInt =  intSum.divide(BigDecimal.valueOf(intCount), 1, RoundingMode.HALF_UP);
         assertThat(statistics.getIntAvg()).isEqualTo(expectedInt);
-        assertThat(statistics.getDecimalAvg()).isEqualTo(expectedFloat);
+        assertThat(statistics.getFloatAvg()).isEqualTo(expectedFloat);
     }
 }

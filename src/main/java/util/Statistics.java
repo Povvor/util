@@ -10,11 +10,11 @@ public class Statistics {
     private @Getter @Setter BigDecimal minInt;
     private @Getter @Setter BigDecimal maxInt;
     private @Getter @Setter BigDecimal sumInt;
-    private @Getter @Setter BigDecimal minDecimal;
-    private @Getter @Setter BigDecimal maxDecimal;
-    private @Getter @Setter BigDecimal sumDecimal;
+    private @Getter @Setter BigDecimal minFloat;
+    private @Getter @Setter BigDecimal maxFloat;
+    private @Getter @Setter BigDecimal sumFloat;
     private @Getter @Setter Integer shortestString, longestString;
-    private @Getter @Setter BigDecimal decimalAvg, intAvg;
+    private @Getter @Setter BigDecimal floatAvg, intAvg;
     private @Getter int emptyStringCount;
 
     public void printStatistics(
@@ -28,7 +28,7 @@ public class Statistics {
             return;
         }
         if (isShortStat || isFullStat) {
-            printUtils.printShortStatistics(stringCount, floatCount, intCount);
+            printUtils.printShortStatistics(stringCount, intCount, floatCount);
         }
         if (isFullStat) {
             calculateAvg(floatCount, intCount);
@@ -37,11 +37,11 @@ public class Statistics {
     }
 
     public void calculateAvg(int floatsCount, int intsCount) {
-        if (sumDecimal != null) {
-            decimalAvg = sumDecimal.divide(BigDecimal.valueOf(floatsCount), 10,  RoundingMode.HALF_UP);
+        if (sumFloat != null) {
+            floatAvg = sumFloat.divide(BigDecimal.valueOf(floatsCount), 10,  RoundingMode.HALF_UP);
         }
         if (sumInt != null) {
-            intAvg = sumInt.divide(BigDecimal.valueOf(intsCount), 10,  RoundingMode.HALF_UP);
+            intAvg = sumInt.divide(BigDecimal.valueOf(intsCount), 1,  RoundingMode.HALF_UP);
         }
     }
 
@@ -72,18 +72,18 @@ public class Statistics {
     }
 
     public void updateFloatMinMaxAndSum(BigDecimal bigDecimal) {
-        if (minDecimal == null || maxDecimal == null || sumDecimal == null) {
-            minDecimal = bigDecimal;
-            maxDecimal = bigDecimal;
-            sumDecimal = bigDecimal;
+        if (minFloat == null || maxFloat == null || sumFloat == null) {
+            minFloat = bigDecimal;
+            maxFloat = bigDecimal;
+            sumFloat = bigDecimal;
         } else  {
-            if (minDecimal.compareTo(bigDecimal) > 0) {
-                minDecimal = bigDecimal;
+            if (minFloat.compareTo(bigDecimal) > 0) {
+                minFloat = bigDecimal;
             }
-            if (maxDecimal.compareTo(bigDecimal) < 0) {
-                maxDecimal = bigDecimal;
+            if (maxFloat.compareTo(bigDecimal) < 0) {
+                maxFloat = bigDecimal;
             }
-            sumDecimal = sumDecimal.add(bigDecimal);
+            sumFloat = sumFloat.add(bigDecimal);
         }
     }
 

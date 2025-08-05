@@ -48,6 +48,7 @@ class CoreLogicTest {
         CoreLogic coreLogic = new CoreLogic();
         coreLogic.setPath("src/test/java/resources/writeTest");
         String[] input = {"hello", "world", "!!!", "1", "11", "21.2"};
+        coreLogic.initPaths();
         coreLogic.initWriters();
         for (String string : input) {
             coreLogic.processString(string);
@@ -114,21 +115,53 @@ class CoreLogicTest {
     @Test
     void closeWritersTest() throws IOException {
         CoreLogic coreLogic = new CoreLogic();
-        String fileName = "writeTest.txt";
         String filePath = "src/test/java/resources/writeTest";
-        Path path = Paths.get(filePath + '/' + fileName);
+        String testString = "hello world";
         coreLogic.setPath(filePath);
-        String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
-        Stream<String> stream = Stream.of(strings);
-        BufferedWriter writer;
-        writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-        stream.forEach(string -> coreLogic.write(writer, string));
-        writer.close();
-        stream = Stream.of(strings);
-        stream.forEach(string -> coreLogic.write(writer, string));
-        List<String> result = Files.readAllLines(path);
-        assertThat(result.size()).isEqualTo(strings.length);
-        assertThat(result).isEqualTo(List.of(strings));
-        Files.deleteIfExists(path);
+        coreLogic.initPaths();
+        coreLogic.initWriters();
+        coreLogic.write(coreLogic.getFloatWriter(), testString);
+        coreLogic.write(coreLogic.getIntegerWriter(), testString);
+        coreLogic.write(coreLogic.getStringWriter(), testString);
+        coreLogic.closeWriters();
+        coreLogic.write(coreLogic.getFloatWriter(), testString);
+        coreLogic.write(coreLogic.getIntegerWriter(), testString);
+        coreLogic.write(coreLogic.getStringWriter(), testString);
+        assertThat(Files.readAllLines(coreLogic.getFloatPath())).size().isEqualTo(1);
+        assertThat(Files.readAllLines(coreLogic.getIntegerPath())).size().isEqualTo(1);
+        assertThat(Files.readAllLines(coreLogic.getStringPath())).size().isEqualTo(1);
+
+    }
+
+    @Test
+    void readFileTest() {
+        CoreLogic coreLogic = new CoreLogic();
+        String fileName = "src/test/java/resources/test.txt";
+        List<String> result = coreLogic.readFile(fileName).toList();
+        assertThat(result).size().isEqualTo(1);
+        assertThat(result.get(0)).isEqualTo("text");
+    }
+
+    @Test
+    void readFileTestWhenWrongPath() {
+        CoreLogic coreLogic = new CoreLogic();
+        String fileName = "src/test/java/resources/fake.txt";
+        List<String> result = coreLogic.readFile(fileName).toList();
+        assertThat(result).isEmpty();
+    }
+
+    @Test
+    void deleteEmptyFilesTest() throws IOException {
+        CoreLogic coreLogic = new CoreLogic();
+        coreLogic.setPath("src/test/java/resources/writeTest");
+        coreLogic.initPaths();
+        coreLogic.initWriters();
+        try (Stream<Path> stream = Files.list((Paths.get(coreLogic.getPath())))) {
+            assertThat(stream.findAny()).isNotEmpty();
+        }
+        coreLogic.deleteEmptyFiles();
+        try (Stream<Path> stream = Files.list((Paths.get(coreLogic.getPath())))) {
+            assertThat(stream.findAny()).isEmpty();
+        }
     }
 }

@@ -15,7 +15,7 @@ public class PrintUtils {
             System.out.println("Целых чисел не обнаружено!");
         }
 
-        if  (statistics.getMinDecimal() != null) {
+        if  (statistics.getMinFloat() != null) {
             System.out.println("Полная статистика для действительных чисел:");
             printStatisticsForEachType(Type.FLOAT);
         }  else {
@@ -47,10 +47,10 @@ public class PrintUtils {
                 System.out.println();
                 break;
             case FLOAT:
-                System.out.println("Минимальное число: " + statistics.getMinDecimal());
-                System.out.println("Максимальное число: " + statistics.getMaxDecimal());
-                System.out.println("Сумма: " + statistics.getSumDecimal());
-                System.out.println("Среднее значение: " + statistics.getDecimalAvg());
+                System.out.println("Минимальное число: " + statistics.getMinFloat());
+                System.out.println("Максимальное число: " + statistics.getMaxFloat());
+                System.out.println("Сумма: " + statistics.getSumFloat());
+                System.out.println("Среднее значение: " + statistics.getFloatAvg());
                 System.out.println();
                 break;
             case STRING:
@@ -79,4 +79,16 @@ public class PrintUtils {
         System.out.println("Данный файл проигнорирован\n");
     }
 
+    public void printNoArgsMsg() {
+        System.out.println("Не введено ни одного аргумента");
+        System.out.println("Введите -h или --help что бы получить помощь.");
+    }
+
+    public void printNoFilesMsg() {
+        System.out.println("Не обнаружено файлов доступных для обработки");
+    }
+
+    public void printFileDeleteErrorMsg(String type) {
+        System.out.println("Ошибка при попытке очистки файла: " + type);
+    }
 }
