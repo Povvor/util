@@ -67,13 +67,13 @@ class CoreLogicTest {
     @Test
     void writeTestWhenReadOnly() throws IOException {
         CoreLogic coreLogic = new CoreLogic(new Options());
-        String path = "src/test/java/readOnly.txt";
+        Path path = Paths.get("src/test/java/resources/readOnly.txt");
         String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
         Stream<String> stream = Stream.of(strings);
         BufferedWriter writer;
-        writer = Files.newBufferedWriter(Paths.get(path), StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+        writer = Files.newBufferedWriter(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
         stream.forEach(string -> coreLogic.write(writer, string));
-        List<String>  result = Files.readAllLines(Paths.get("src/test/java/resources/readOnly.txt"));
+        List<String>  result = Files.readAllLines(path);
         writer.close();
         assertThat(result).size().isEqualTo(0);
     }
@@ -95,8 +95,10 @@ class CoreLogicTest {
         assertThat(Files.readAllLines(coreLogic.getFloatPath())).size().isEqualTo(1);
         assertThat(Files.readAllLines(coreLogic.getIntegerPath())).size().isEqualTo(1);
         assertThat(Files.readAllLines(coreLogic.getStringPath())).size().isEqualTo(1);
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/floats.txt"));
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/integers.txt"));
+        Files.deleteIfExists(Paths.get("src/test/java/resources/writeTest/strings.txt"));
     }
-
 
     @Test
     void initWritersTestWhenPathNotExist() throws IOException {
@@ -140,6 +142,7 @@ class CoreLogicTest {
         String filePath = "src/test/java/resources/writeTest";
         CoreLogic coreLogic = new CoreLogic(new Options(filePath));
         coreLogic.initPaths();
+        System.out.println(coreLogic.getFloatPath());
         coreLogic.initWriters();
         try (Stream<Path> stream = Files.list((Paths.get(filePath)))) {
             assertThat(stream.findAny()).isNotEmpty();

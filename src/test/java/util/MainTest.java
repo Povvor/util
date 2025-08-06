@@ -20,7 +20,7 @@ public class MainTest {
         assertThat(result.isFullStat()).isTrue();
         assertThat(result.toRewrite()).isEqualTo(StandardOpenOption.APPEND);
         assertThat(result.prefix()).isEqualTo(prefix);
-        assertThat(result.path()).isEqualTo(path);
+        assertThat(result.path()).isEqualTo(path + '/');
         assertThat(result.files().get(0)).isEqualTo(filename);
     }
 

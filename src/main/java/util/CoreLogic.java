@@ -127,9 +127,9 @@ public class CoreLogic {
     }
 
     public void initPaths() {
-        stringPath = Paths.get(options.path() + '/' + options.prefix() + "strings.txt");
-        floatPath = Paths.get(options.path() + '/' + options.prefix() + "floats.txt");
-        integerPath = Paths.get(options.path() + '/' + options.prefix() + "integers.txt");
+        stringPath = Paths.get(options.path() + options.prefix() + "strings.txt");
+        floatPath = Paths.get(options.path() + options.prefix() + "floats.txt");
+        integerPath = Paths.get(options.path() + options.prefix() + "integers.txt");
     }
 
     public void deleteEmptyFiles() {

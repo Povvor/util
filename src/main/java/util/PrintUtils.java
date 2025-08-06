@@ -40,7 +40,7 @@ public final class PrintUtils {
         System.out.println("  -o        Задать путь для результатов");
         System.out.println("  -s        Вывод краткой статистики");
         System.out.println("  -f        Вывод полной статистики");
-        System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
+        System.out.println("  -a        Добавление строк в конец файлов (по умолчанию перезапись)");
     }
 
     public static void printFileOpenError(Exception e, String fileName) {

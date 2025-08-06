@@ -13,10 +13,10 @@ public record Options(
         String path
 ) {
     public Options() {
-        this(false, false, List.of(), StandardOpenOption.TRUNCATE_EXISTING, "", "");
+        this(false, false, List.of(), StandardOpenOption.TRUNCATE_EXISTING, "", "/");
     }
 
     public Options(String path) {
-        this(false, false, List.of(), StandardOpenOption.TRUNCATE_EXISTING, "", path);
+        this(false, false, List.of(), StandardOpenOption.TRUNCATE_EXISTING, "", path + '/');
     }
 }

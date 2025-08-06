@@ -39,7 +39,7 @@ public class Main {
                     i++;
                     break;
                 case "-o":
-                    path = findValueAfterArg(args, i);
+                    path = (findValueAfterArg(args, i) + '/');
                     i++;
                     break;
                 case "-h", "--help":
