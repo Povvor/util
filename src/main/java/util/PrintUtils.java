@@ -7,20 +7,20 @@ public final class PrintUtils {
     public static void printFullStatistics(Statistics statistics) {
         if  (statistics.getMinInt() != null) {
             System.out.println("Полная статистика для целых чисел:");
-            printStatisticsForEachType(Type.INTEGER, statistics);
+            printStatisticsForEachType(StringType.INTEGER, statistics);
         } else {
             System.out.println("Целых чисел не обнаружено!");
         }
 
         if  (statistics.getMinFloat() != null) {
             System.out.println("Полная статистика для действительных чисел:");
-            printStatisticsForEachType(Type.FLOAT, statistics);
+            printStatisticsForEachType(StringType.FLOAT, statistics);
         }  else {
             System.out.println("Действительных чисел не обнаружено!");
         }
         if  (statistics.getShortestString() != null) {
             System.out.println("Полная статистика для строк:");
-            printStatisticsForEachType(Type.STRING, statistics);
+            printStatisticsForEachType(StringType.STRING, statistics);
         } else {
             System.out.println("Строк не обнаружено!");
         }
@@ -62,7 +62,7 @@ public final class PrintUtils {
         System.out.println("Ошибка при попытке очистки файла: " + type);
     }
 
-    private static void printStatisticsForEachType(Type type, Statistics statistics) {
+    private static void printStatisticsForEachType(StringType type, Statistics statistics) {
         switch (type) {
             case INTEGER:
                 System.out.println("Минимальное число: " + statistics.getMinInt());

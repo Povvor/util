@@ -44,7 +44,7 @@ public class Statistics {
         }
     }
 
-    public void processStringForStatistics(String string, boolean shouldProceed, Type type) {
+    public void processStringForStatistics(String string, boolean shouldProceed, StringType type) {
         if (!shouldProceed) {
             return;
         }

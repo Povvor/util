@@ -19,12 +19,12 @@ class CoreLogicTest {
     @Test
     void defineStringTypeTest() {
         CoreLogic coreLogic = new CoreLogic(newOption());
-        Type resultString = coreLogic.defineStringType("Hello World!");
-        Type resultInteger = coreLogic.defineStringType("42");
-        Type resultFloat = coreLogic.defineStringType("3.14");
-        assertThat(resultString).isEqualTo(Type.STRING);
-        assertThat(resultInteger).isEqualTo(Type.INTEGER);
-        assertThat(resultFloat).isEqualTo(Type.FLOAT);
+        StringType resultString = coreLogic.defineStringType("Hello World!");
+        StringType resultInteger = coreLogic.defineStringType("42");
+        StringType resultFloat = coreLogic.defineStringType("3.14");
+        assertThat(resultString).isEqualTo(StringType.STRING);
+        assertThat(resultInteger).isEqualTo(StringType.INTEGER);
+        assertThat(resultFloat).isEqualTo(StringType.FLOAT);
 
     }
 
@@ -126,7 +126,7 @@ class CoreLogicTest {
         String fileName = "src/test/java/resources/test.txt";
         List<String> result = coreLogic.readFile(fileName).toList();
         assertThat(result).size().isEqualTo(1);
-        assertThat(result.get(0)).isEqualTo("text");
+        assertThat(result.getFirst()).isEqualTo("text");
     }
 
     @Test

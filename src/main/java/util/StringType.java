@@ -1,6 +1,6 @@
 package util;
 
-public enum Type {
+public enum StringType {
     STRING,
     INTEGER,
     FLOAT
