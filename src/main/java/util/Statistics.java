@@ -44,7 +44,7 @@ public class Statistics {
         }
     }
 
-    public void processStringForStatistics(String string, boolean shouldProceed, StringType stringType) {
+    public void processStringForStatistics(String string, boolean shouldProceed, Type type) {
         if (!shouldProceed) {
             return;
         }
@@ -53,7 +53,7 @@ public class Statistics {
             return;
         }
 
-        switch (stringType) {
+        switch (type) {
             case FLOAT:
                 BigDecimal bigDecimal = new BigDecimal(string);
                 updateFloatMinMaxAndSum(bigDecimal);

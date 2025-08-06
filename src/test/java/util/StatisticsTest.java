@@ -13,7 +13,7 @@ class StatisticsTest {
     void processStringForStatisticsWhenInput4Empty() {
         Statistics statistics = new Statistics();
         for (int i = 0; i < 4; i++) {
-            statistics.processStringForStatistics("", true, StringType.STRING);
+            statistics.processStringForStatistics("", true, Type.STRING);
         }
         assertThat(statistics.getEmptyStringCount()).isEqualTo(4);
     }
@@ -22,7 +22,7 @@ class StatisticsTest {
     void processStringForStatisticsWhenInputString() {
         Statistics statistics = new Statistics();
         String input = "A";
-        statistics.processStringForStatistics(input, true, StringType.STRING);
+        statistics.processStringForStatistics(input, true, Type.STRING);
         assertThat(statistics.getShortestString()).isNotNull();
         assertThat(statistics.getLongestString()).isNotNull();
     }
@@ -31,7 +31,7 @@ class StatisticsTest {
     void whenInput2StringsWhenInputInteger() {
         Statistics statistics = new Statistics();
         String input = "1";
-        statistics.processStringForStatistics(input, true, StringType.INTEGER);
+        statistics.processStringForStatistics(input, true, Type.INTEGER);
         assertThat(statistics.getSumInt()).isNotNull();
     }
 
@@ -39,7 +39,7 @@ class StatisticsTest {
     void whenInput2StringsWhenInputFloat() {
         Statistics statistics = new Statistics();
         String input = "1.2";
-        statistics.processStringForStatistics(input, true, StringType.FLOAT);
+        statistics.processStringForStatistics(input, true, Type.FLOAT);
         assertThat(statistics.getSumFloat()).isNotNull();
     }
 

@@ -39,24 +39,24 @@ public class CoreLogic {
         deleteEmptyFiles();
     }
 
-    public StringType defineStringType(String string) {
+    public Type defineStringType(String string) {
         try {
             new BigInteger(string);
-            return StringType.INTEGER;
+            return Type.INTEGER;
         } catch (NumberFormatException e) {
             try {
                 new BigDecimal(string);
-                return StringType.FLOAT;
+                return Type.FLOAT;
             } catch (NumberFormatException e2) {
-                return StringType.STRING;
+                return Type.STRING;
             }
         }
     }
 
     public void processString(String inputString) {
-        StringType stringType = defineStringType(inputString);
-        statistics.processStringForStatistics(inputString, options.isFullStat(), stringType);
-        switch (stringType) {
+        Type type = defineStringType(inputString);
+        statistics.processStringForStatistics(inputString, options.isFullStat(), type);
+        switch (type) {
             case STRING:
                 if (inputString.isEmpty()) {
                     return;
