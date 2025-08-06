@@ -20,7 +20,6 @@ public class Statistics {
     public void printStatistics(
             Boolean isShortStat,
             Boolean isFullStat,
-            PrintUtils printUtils,
             int stringCount,
             int floatCount,
             int intCount) {
@@ -28,11 +27,11 @@ public class Statistics {
             return;
         }
         if (isShortStat || isFullStat) {
-            printUtils.printShortStatistics(stringCount, intCount, floatCount);
+            PrintUtils.printShortStatistics(stringCount, intCount, floatCount);
         }
         if (isFullStat) {
             calculateAvg(floatCount, intCount);
-            printUtils.getFullStatistics();
+            PrintUtils.printFullStatistics(this);
         }
     }
 

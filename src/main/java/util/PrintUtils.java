@@ -1,35 +1,32 @@
 package util;
 
-public class PrintUtils {
-    private final Statistics statistics;
+public final class PrintUtils {
 
-    public PrintUtils(Statistics statistics) {
-        this.statistics = statistics;
-    }
+    private PrintUtils() { }
 
-    public void getFullStatistics() {
+    public static void printFullStatistics(Statistics statistics) {
         if  (statistics.getMinInt() != null) {
             System.out.println("Полная статистика для целых чисел:");
-            printStatisticsForEachType(Type.INTEGER);
+            printStatisticsForEachType(Type.INTEGER, statistics);
         } else {
             System.out.println("Целых чисел не обнаружено!");
         }
 
         if  (statistics.getMinFloat() != null) {
             System.out.println("Полная статистика для действительных чисел:");
-            printStatisticsForEachType(Type.FLOAT);
+            printStatisticsForEachType(Type.FLOAT, statistics);
         }  else {
             System.out.println("Действительных чисел не обнаружено!");
         }
         if  (statistics.getShortestString() != null) {
             System.out.println("Полная статистика для строк:");
-            printStatisticsForEachType(Type.STRING);
+            printStatisticsForEachType(Type.STRING, statistics);
         } else {
             System.out.println("Строк не обнаружено!");
         }
     }
 
-    public void printShortStatistics(int stringCount, int integerCount, int floatCount) {
+    public static void printShortStatistics(int stringCount, int integerCount, int floatCount) {
         System.out.println("Краткая статистика:");
         System.out.println("Количество записанных целых чисел: " + integerCount);
         System.out.println("Количество записанных действительных чисел: " + floatCount);
@@ -37,7 +34,35 @@ public class PrintUtils {
         System.out.println();
     }
 
-    public void printStatisticsForEachType(Type type) {
+    public static void printHelp() {
+        System.out.println("Опции:");
+        System.out.println("  -p        Добавляет префикс к созданным файлам.");
+        System.out.println("  -o        Задать путь для результатов");
+        System.out.println("  -s        Вывод краткой статистики");
+        System.out.println("  -f        Вывод полной статистики");
+        System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
+    }
+
+    public static void printFileOpenError(Exception e, String fileName) {
+        System.out.println("Возникла проблема при обработке файла: " + fileName);
+        System.out.println(e.getClass().getSimpleName());
+        System.out.println("Данный файл проигнорирован\n");
+    }
+
+    public static void printNoArgsMsg() {
+        System.out.println("Не введено ни одного аргумента");
+        System.out.println("Введите -h или --help что бы получить помощь.");
+    }
+
+    public static void printNoFilesMsg() {
+        System.out.println("Не обнаружено файлов доступных для обработки");
+    }
+
+    public static void printFileDeleteErrorMsg(String type) {
+        System.out.println("Ошибка при попытке очистки файла: " + type);
+    }
+
+    private static void printStatisticsForEachType(Type type, Statistics statistics) {
         switch (type) {
             case INTEGER:
                 System.out.println("Минимальное число: " + statistics.getMinInt());
@@ -62,33 +87,5 @@ public class PrintUtils {
             default:
                 System.out.println("Неизвестный тип данных");
         }
-    }
-
-    public void printHelp() {
-        System.out.println("Опции:");
-        System.out.println("  -p        Добавляет префикс к созданным файлам.");
-        System.out.println("  -o        Задать путь для результатов");
-        System.out.println("  -s        Вывод краткой статистики");
-        System.out.println("  -f        Вывод полной статистики");
-        System.out.println("  -a        Добавление файлов в конец файлов (по умолчанию перезапись)");
-    }
-
-    public void printFileOpenError(Exception e, String fileName) {
-        System.out.println("Возникла проблема при обработке файла: " + fileName);
-        System.out.println(e.getClass().getSimpleName());
-        System.out.println("Данный файл проигнорирован\n");
-    }
-
-    public void printNoArgsMsg() {
-        System.out.println("Не введено ни одного аргумента");
-        System.out.println("Введите -h или --help что бы получить помощь.");
-    }
-
-    public void printNoFilesMsg() {
-        System.out.println("Не обнаружено файлов доступных для обработки");
-    }
-
-    public void printFileDeleteErrorMsg(String type) {
-        System.out.println("Ошибка при попытке очистки файла: " + type);
     }
 }

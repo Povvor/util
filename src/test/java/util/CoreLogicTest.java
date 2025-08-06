@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -17,7 +18,7 @@ class CoreLogicTest {
 
     @Test
     void defineStringTypeTest() {
-        CoreLogic coreLogic = new CoreLogic();
+        CoreLogic coreLogic = new CoreLogic(newOption());
         Type resultString = coreLogic.defineStringType("Hello World!");
         Type resultInteger = coreLogic.defineStringType("42");
         Type resultFloat = coreLogic.defineStringType("3.14");
@@ -28,25 +29,8 @@ class CoreLogicTest {
     }
 
     @Test
-    void parseArgsTest() {
-        CoreLogic coreLogic = new CoreLogic();
-        String prefix = "prefix";
-        String path = "path";
-        String filename = "file.txt";
-        String[] args = {"-s", "-f", "-a", "-p", prefix, "-o", path, filename};
-        coreLogic.parseArgs(args);
-        assertThat(coreLogic.isShortStat()).isTrue();
-        assertThat(coreLogic.isFullStat()).isTrue();
-        assertThat(coreLogic.getToRewrite()).isEqualTo(StandardOpenOption.APPEND);
-        assertThat(coreLogic.getPrefix()).isEqualTo(prefix);
-        assertThat(coreLogic.getPath()).isEqualTo(path);
-        assertThat(coreLogic.getFiles().get(0)).isEqualTo(filename);
-    }
-
-    @Test
     void processStringTest() throws IOException {
-        CoreLogic coreLogic = new CoreLogic();
-        coreLogic.setPath("src/test/java/resources/writeTest");
+        CoreLogic coreLogic = new CoreLogic(new Options());
         String[] input = {"hello", "world", "!!!", "1", "11", "21.2"};
         coreLogic.initPaths();
         coreLogic.initWriters();
@@ -63,11 +47,11 @@ class CoreLogicTest {
 
     @Test
     void writeTest() throws IOException {
-        CoreLogic coreLogic = new CoreLogic();
         String fileName = "writeTest.txt";
         String filePath = "src/test/java/resources/writeTest";
         Path path = Paths.get(filePath + '/' + fileName);
-        coreLogic.setPath(filePath);
+        Options options = new Options(path.toString());
+        CoreLogic coreLogic = new CoreLogic(options);
         String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
         Stream<String> stream = Stream.of(strings);
         BufferedWriter writer;
@@ -82,7 +66,7 @@ class CoreLogicTest {
 
     @Test
     void writeTestWhenReadOnly() throws IOException {
-        CoreLogic coreLogic = new CoreLogic();
+        CoreLogic coreLogic = new CoreLogic(new Options());
         String path = "src/test/java/readOnly.txt";
         String[] strings = {"hello", "world", "!!!", "1", "11", "21.2" };
         Stream<String> stream = Stream.of(strings);
@@ -95,29 +79,10 @@ class CoreLogicTest {
     }
 
     @Test
-    void findValueAfterArgTest() {
-        CoreLogic coreLogic = new CoreLogic();
-        String[] input = {"-p", "prefix"};
-        String result = coreLogic.findValueAfterArg(input, 0);
-        String expected = input[1];
-        assertThat(result).isEqualTo(expected);
-    }
-
-    @Test
-    void findValueAfterArgTestWhenError() {
-        CoreLogic coreLogic = new CoreLogic();
-        String[] input = {"-s", "prefix", "-p"};
-        String result = coreLogic.findValueAfterArg(input, 2);
-        assertThat(result).isEmpty();
-
-    }
-
-    @Test
     void closeWritersTest() throws IOException {
-        CoreLogic coreLogic = new CoreLogic();
         String filePath = "src/test/java/resources/writeTest";
+        CoreLogic coreLogic = new CoreLogic(new Options(filePath));
         String testString = "hello world";
-        coreLogic.setPath(filePath);
         coreLogic.initPaths();
         coreLogic.initWriters();
         coreLogic.write(coreLogic.getFloatWriter(), testString);
@@ -130,12 +95,32 @@ class CoreLogicTest {
         assertThat(Files.readAllLines(coreLogic.getFloatPath())).size().isEqualTo(1);
         assertThat(Files.readAllLines(coreLogic.getIntegerPath())).size().isEqualTo(1);
         assertThat(Files.readAllLines(coreLogic.getStringPath())).size().isEqualTo(1);
+    }
 
+
+    @Test
+    void initWritersTestWhenPathNotExist() throws IOException {
+        String filePath = "src/test/java/resources/writeTest/absentPath";
+        Path path = Paths.get(filePath);
+        CoreLogic coreLogic = new CoreLogic(new Options(filePath));
+        String testString = "hello world";
+        coreLogic.initPaths();
+        coreLogic.initWriters();
+        coreLogic.write(coreLogic.getFloatWriter(), testString);
+        coreLogic.write(coreLogic.getIntegerWriter(), testString);
+        coreLogic.write(coreLogic.getStringWriter(), testString);
+        try (Stream<Path> stream = Files.walk(path)) {
+            assertThat(stream.count()).isEqualTo(4);
+        }
+        Files.deleteIfExists(coreLogic.getIntegerPath());
+        Files.deleteIfExists(coreLogic.getFloatPath());
+        Files.deleteIfExists(coreLogic.getStringPath());
+        Files.delete(path);
     }
 
     @Test
     void readFileTest() {
-        CoreLogic coreLogic = new CoreLogic();
+        CoreLogic coreLogic = new CoreLogic(new Options());
         String fileName = "src/test/java/resources/test.txt";
         List<String> result = coreLogic.readFile(fileName).toList();
         assertThat(result).size().isEqualTo(1);
@@ -144,7 +129,7 @@ class CoreLogicTest {
 
     @Test
     void readFileTestWhenWrongPath() {
-        CoreLogic coreLogic = new CoreLogic();
+        CoreLogic coreLogic = new CoreLogic(new Options());
         String fileName = "src/test/java/resources/fake.txt";
         List<String> result = coreLogic.readFile(fileName).toList();
         assertThat(result).isEmpty();
@@ -152,16 +137,21 @@ class CoreLogicTest {
 
     @Test
     void deleteEmptyFilesTest() throws IOException {
-        CoreLogic coreLogic = new CoreLogic();
-        coreLogic.setPath("src/test/java/resources/writeTest");
+        String filePath = "src/test/java/resources/writeTest";
+        CoreLogic coreLogic = new CoreLogic(new Options(filePath));
         coreLogic.initPaths();
         coreLogic.initWriters();
-        try (Stream<Path> stream = Files.list((Paths.get(coreLogic.getPath())))) {
+        try (Stream<Path> stream = Files.list((Paths.get(filePath)))) {
             assertThat(stream.findAny()).isNotEmpty();
         }
         coreLogic.deleteEmptyFiles();
-        try (Stream<Path> stream = Files.list((Paths.get(coreLogic.getPath())))) {
+        try (Stream<Path> stream = Files.list((Paths.get(filePath)))) {
             assertThat(stream.findAny()).isEmpty();
         }
+    }
+
+    private Options newOption() {
+        return new Options(false, false, new ArrayList<>(), StandardOpenOption.TRUNCATE_EXISTING, "prefix", "path");
+
     }
 }

@@ -1,7 +1,6 @@
 package util;
 
 import lombok.Getter;
-import lombok.Setter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -11,48 +10,31 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.stream.Stream;
 
 public class CoreLogic {
-    private @Getter
-    final List<String> files = new ArrayList<>();
-    private @Getter
-    final List<String> integerOutput = new ArrayList<>();
-    private @Getter
-    final List<String> floatOutput = new ArrayList<>();
-    private @Getter
-    final List<String> stringOutput = new ArrayList<>();
     private @Getter int stringCount, intCount, floatCount;
-    private @Getter boolean isShortStat = false;
-    private @Getter boolean isFullStat = false;
-    private @Getter StandardOpenOption toRewrite = StandardOpenOption.TRUNCATE_EXISTING;
-    private @Getter String prefix = "";
-    private @Getter
-    @Setter String path = "";
     private final @Getter Statistics statistics = new Statistics();
-    private final PrintUtils printUtils = new PrintUtils(statistics);
     private @Getter BufferedWriter stringWriter, floatWriter, integerWriter;
     private @Getter Path stringPath, floatPath, integerPath;
+    private final Options options;
 
-    public void run(String[] args) {
-        parseArgs(args);
+    public CoreLogic(Options options) {
+        this.options = options;
+    }
+
+    public void run() {
         initPaths();
-        if (args.length == 0) {
-            printUtils.printNoArgsMsg();
-            return;
-        }
-        if (files.isEmpty()) {
-            printUtils.printNoFilesMsg();
+        if (options.files().isEmpty()) {
+            PrintUtils.printNoFilesMsg();
             return;
         }
         initWriters();
-        for (String fileName : files) {
+        for (String fileName : options.files()) {
             Stream<String> strings = readFile(fileName);
             strings.forEach(this::processString);
         }
-        statistics.printStatistics(isShortStat, isFullStat, printUtils, stringCount, floatCount, intCount);
+        statistics.printStatistics(options.isShortStat(), options.isFullStat(), stringCount, floatCount, intCount);
         closeWriters();
         deleteEmptyFiles();
     }
@@ -71,48 +53,9 @@ public class CoreLogic {
         }
     }
 
-    public String findValueAfterArg(String[] args, int index) {
-        try {
-            return args[index + 1];
-        } catch (ArrayIndexOutOfBoundsException e) {
-            System.out.println("Ошибка при обработке аргумента после опции: " + args[index]);
-        }
-        return "";
-    }
-
-    public void parseArgs(String[] args) {
-        for (int i = 0; i < args.length; i++) {
-            switch (args[i]) {
-                case "-s":
-                    isShortStat = true;
-                    break;
-                case "-f":
-                    isFullStat = true;
-                    break;
-                case "-a":
-                    toRewrite = StandardOpenOption.APPEND;
-                    break;
-                case "-p":
-                    prefix = findValueAfterArg(args, i);
-                    i++;
-                    break;
-                case "-o":
-                    path = findValueAfterArg(args, i);
-                    i++;
-                    break;
-                case "-h", "--help":
-                    printUtils.printHelp();
-                    break;
-                default:
-                    files.add(args[i]);
-                    break;
-            }
-        }
-    }
-
     public void processString(String inputString) {
         Type type = defineStringType(inputString);
-        statistics.processStringForStatistics(inputString, isFullStat, type);
+        statistics.processStringForStatistics(inputString, options.isFullStat(), type);
         switch (type) {
             case STRING:
                 if (inputString.isEmpty()) {
@@ -142,16 +85,16 @@ public class CoreLogic {
             writer.write(string);
             writer.newLine();
         } catch (IOException e) {
-            printUtils.printFileOpenError(e, writer.toString());
+            PrintUtils.printFileOpenError(e, writer.toString());
         }
     }
 
     public void initWriters() {
         try {
-            Files.createDirectories(Paths.get(path));
-            stringWriter = Files.newBufferedWriter(stringPath, StandardOpenOption.CREATE, toRewrite);
-            integerWriter = Files.newBufferedWriter(integerPath, StandardOpenOption.CREATE, toRewrite);
-            floatWriter = Files.newBufferedWriter(floatPath, StandardOpenOption.CREATE, toRewrite);
+            Files.createDirectories(Paths.get(options.path()));
+            stringWriter = Files.newBufferedWriter(stringPath, StandardOpenOption.CREATE, options.toRewrite());
+            integerWriter = Files.newBufferedWriter(integerPath, StandardOpenOption.CREATE, options.toRewrite());
+            floatWriter = Files.newBufferedWriter(floatPath, StandardOpenOption.CREATE, options.toRewrite());
         } catch (IOException e) {
             System.out.println("Задан недопустимый путь!");
         }
@@ -178,15 +121,15 @@ public class CoreLogic {
         try {
             return Files.lines(Paths.get(fileName));
         } catch (IOException e) {
-            printUtils.printFileOpenError(e, fileName);
+            PrintUtils.printFileOpenError(e, fileName);
             return Stream.empty();
         }
     }
 
     public void initPaths() {
-        stringPath = Paths.get(path + '/' + prefix + "strings.txt");
-        floatPath = Paths.get(path + '/' + prefix + "floats.txt");
-        integerPath = Paths.get(path + '/' + prefix + "integers.txt");
+        stringPath = Paths.get(options.path() + '/' + options.prefix() + "strings.txt");
+        floatPath = Paths.get(options.path() + '/' + options.prefix() + "floats.txt");
+        integerPath = Paths.get(options.path() + '/' + options.prefix() + "integers.txt");
     }
 
     public void deleteEmptyFiles() {
@@ -194,21 +137,21 @@ public class CoreLogic {
             try {
                 Files.deleteIfExists(stringPath);
             } catch (IOException e) {
-                printUtils.printFileDeleteErrorMsg("Strings");
+                PrintUtils.printFileDeleteErrorMsg("Strings");
             }
         }
         if (floatCount == 0) {
             try {
                 Files.deleteIfExists(floatPath);
             } catch (IOException e) {
-                printUtils.printFileDeleteErrorMsg("Floats");
+                PrintUtils.printFileDeleteErrorMsg("Floats");
             }
         }
         if (intCount == 0) {
             try {
                 Files.deleteIfExists(integerPath);
             } catch (IOException e) {
-                printUtils.printFileDeleteErrorMsg("Integers");
+                PrintUtils.printFileDeleteErrorMsg("Integers");
             }
         }
     }
