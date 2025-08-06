@@ -19,12 +19,12 @@ class CoreLogicTest {
     @Test
     void defineStringTypeTest() {
         CoreLogic coreLogic = new CoreLogic(newOption());
-        Type resultString = coreLogic.defineStringType("Hello World!");
-        Type resultInteger = coreLogic.defineStringType("42");
-        Type resultFloat = coreLogic.defineStringType("3.14");
-        assertThat(resultString).isEqualTo(Type.STRING);
-        assertThat(resultInteger).isEqualTo(Type.INTEGER);
-        assertThat(resultFloat).isEqualTo(Type.FLOAT);
+        StringType resultString = coreLogic.defineStringType("Hello World!");
+        StringType resultInteger = coreLogic.defineStringType("42");
+        StringType resultFloat = coreLogic.defineStringType("3.14");
+        assertThat(resultString).isEqualTo(StringType.STRING);
+        assertThat(resultInteger).isEqualTo(StringType.INTEGER);
+        assertThat(resultFloat).isEqualTo(StringType.FLOAT);
 
     }
 
@@ -96,7 +96,6 @@ class CoreLogicTest {
         assertThat(Files.readAllLines(coreLogic.getIntegerPath())).size().isEqualTo(1);
         assertThat(Files.readAllLines(coreLogic.getStringPath())).size().isEqualTo(1);
     }
-
 
     @Test
     void initWritersTestWhenPathNotExist() throws IOException {
